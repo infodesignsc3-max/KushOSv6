@@ -1,0 +1,2283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KushOS Advanced</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080c08;--bg2:#0d130d;--bg3:#121a12;--card:#161f16;--card2:#1c271c;
+  --border:#243424;--border2:#2e442e;
+  --green:#4ade80;--green2:#22c55e;--green3:#15803d;--green4:#052e16;
+  --gold:#fbbf24;--gold2:#92400e;
+  --amber:#f97316;--red:#ef4444;--blue:#60a5fa;--purple:#a78bfa;
+  --cyan:#22d3ee;
+  --text:#f0f7f0;--text2:#86a886;--text3:#4a6a4a;--text4:#2a4a2a;
+  --ff-head:'Bebas Neue',sans-serif;
+  --ff-mono:'IBM Plex Mono',monospace;
+  --ff-body:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--ff-body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
+.app{max-width:780px;margin:0 auto;padding:0 0 100px;position:relative;z-index:1}
+
+/* ══ PASSWORD SCREEN ══ */
+#pwScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px}
+#pwScreen::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;opacity:.4}
+.pw-box{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:36px 32px;text-align:center;max-width:340px;width:90%;position:relative;z-index:1}
+.pw-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green3),transparent)}
+.pw-logo{font-family:var(--ff-head);font-size:40px;letter-spacing:2px;color:var(--text);margin-bottom:4px}
+.pw-logo em{color:var(--green);font-style:normal}
+.pw-sub{font-family:var(--ff-mono);font-size:9px;color:var(--text3);letter-spacing:3px;text-transform:uppercase;margin-bottom:24px}
+.pw-label{font-family:var(--ff-mono);font-size:8px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:8px}
+.pw-input{width:100%;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:var(--ff-mono);font-size:14px;letter-spacing:3px;text-align:center;outline:none;transition:border-color .15s;margin-bottom:14px}
+.pw-input:focus{border-color:var(--green3)}
+.pw-btn{width:100%;padding:11px;border-radius:3px;border:1px solid var(--green3);background:var(--green4);color:var(--green);font-family:var(--ff-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .15s}
+.pw-btn:hover{background:var(--green3);color:#fff}
+.pw-err{font-family:var(--ff-mono);font-size:9px;color:var(--red);letter-spacing:1px;height:14px;transition:opacity .2s}
+.pw-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);width:300px;height:300px;background:radial-gradient(circle,rgba(74,222,128,0.04) 0%,transparent 70%);pointer-events:none}
+
+/* ══ COMMERCE / BUY BUTTON ══ */
+.buy-btn{display:block;width:100%;padding:13px;border-radius:3px;border:none;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-family:var(--ff-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-weight:700;transition:all .15s;margin-top:6px}
+.buy-btn:hover{background:linear-gradient(135deg,#fcd34d,#fbbf24);transform:translateY(-1px);box-shadow:0 4px 12px rgba(251,191,36,.3)}
+.pw-divider{margin:18px 0;display:flex;align-items:center;gap:10px}
+.pw-divider::before,.pw-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.pw-divider span{font-family:var(--ff-mono);font-size:8px;color:var(--text4);letter-spacing:2px;text-transform:uppercase}
+.pw-foot{font-family:var(--ff-mono);font-size:8px;color:var(--text4);margin-top:14px;line-height:1.8}
+.pw-foot a{color:var(--green3);text-decoration:none;cursor:pointer}
+.pw-foot a:hover{color:var(--green)}
+.pw-commerce{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:14px;text-align:center}
+.pw-commerce-lbl{font-family:var(--ff-mono);font-size:8px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.pw-commerce-price{font-family:var(--ff-head);font-size:32px;color:var(--gold);letter-spacing:1px;line-height:1}
+.pw-commerce-sub{font-family:var(--ff-mono);font-size:8px;color:var(--text3);margin-top:2px;margin-bottom:10px}
+
+/* ══ TOAST ══ */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card);border:1px solid var(--green3);border-radius:4px;padding:10px 20px;font-family:var(--ff-mono);font-size:11px;color:var(--green);letter-spacing:1px;z-index:99999;transition:transform .3s cubic-bezier(.4,0,.2,1);pointer-events:none}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ══ HEADER ══ */
+.header{padding:32px 20px 0;text-align:center;position:relative}
+.header-eyebrow{font-family:var(--ff-mono);font-size:9px;letter-spacing:4px;color:var(--text3);text-transform:uppercase;margin-bottom:10px}
+.header-logo{font-family:var(--ff-head);font-size:56px;letter-spacing:2px;line-height:1;color:var(--text);margin-bottom:0}
+.header-logo em{color:var(--green);font-style:normal}
+.header-logo sup{font-family:var(--ff-mono);font-size:14px;color:var(--text3);vertical-align:top;margin-top:10px;display:inline-block;letter-spacing:2px}
+.header-sub{font-family:var(--ff-mono);font-size:10px;color:var(--text3);letter-spacing:3px;margin-top:6px;margin-bottom:20px}
+.leaf-center{display:flex;justify-content:center;margin:12px 0 20px;position:relative}
+.leaf-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:160px;height:160px;background:radial-gradient(circle,rgba(74,222,128,0.08) 0%,transparent 70%);animation:glowPulse 3s ease-in-out infinite}
+@keyframes glowPulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.6}50%{transform:translate(-50%,-50%) scale(1.3);opacity:1}}
+.leaf-svg{width:96px;height:96px;animation:leafFloat 4s ease-in-out infinite;filter:drop-shadow(0 0 12px rgba(74,222,128,0.25));position:relative;z-index:1}
+@keyframes leafFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+.lb{fill:#22c55e}.lv{stroke:#15803d;stroke-width:1.3;fill:none;opacity:.7}
+
+/* LIFECYCLE BAR */
+.lifecycle{display:flex;align-items:center;justify-content:center;gap:0;padding:0 16px 24px;overflow-x:auto}
+.lc-node{display:flex;flex-direction:column;align-items:center;cursor:pointer;min-width:52px}
+.lc-pip{width:8px;height:8px;border-radius:50%;background:var(--border2);border:1.5px solid var(--border2);margin-bottom:5px;transition:all .2s}
+.lc-node.done .lc-pip{background:var(--green3);border-color:var(--green2)}
+.lc-node.active .lc-pip{background:var(--green);border-color:var(--green);box-shadow:0 0 10px rgba(74,222,128,.6),0 0 20px rgba(74,222,128,.3)}
+.lc-txt{font-family:var(--ff-mono);font-size:7px;letter-spacing:.5px;color:var(--text3);text-transform:uppercase;white-space:nowrap}
+.lc-node.active .lc-txt{color:var(--green)}
+.lc-node.done .lc-txt{color:var(--text3)}
+.lc-seg{flex:1;height:1px;background:var(--border);min-width:12px;margin-bottom:13px;transition:background .3s}
+.lc-seg.done{background:var(--green3)}
+
+/* ══ NAV ══ */
+.nav{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;padding:0 12px 20px}
+.nav-btn{font-family:var(--ff-mono);font-size:9px;letter-spacing:1px;padding:5px 11px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;text-transform:uppercase}
+.nav-btn:hover{border-color:var(--border2);color:var(--text2)}
+.nav-btn.active{background:var(--green4);border-color:var(--green3);color:var(--green);box-shadow:0 0 8px rgba(74,222,128,.1)}
+
+/* ══ PANELS ══ */
+.panel{display:none;padding:0 14px;animation:fadeUp .25s ease}
+.panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ CARDS ══ */
+.card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:18px;margin-bottom:12px;position:relative}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green3),transparent);opacity:.4}
+.card-flat{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:14px;margin-bottom:8px}
+.card-title{font-family:var(--ff-mono);font-size:8px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ══ GRID LAYOUTS ══ */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+
+/* ══ STAT BOX ══ */
+.stat{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:12px}
+.stat-lbl{font-family:var(--ff-mono);font-size:8px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:4px}
+.stat-val{font-family:var(--ff-head);font-size:28px;color:var(--green);line-height:1;letter-spacing:1px}
+.stat-val.gold{color:var(--gold)}
+.stat-val.amber{color:var(--amber)}
+.stat-val.blue{color:var(--blue)}
+.stat-val.sm{font-size:18px;line-height:1.3}
+.stat-unit{font-family:var(--ff-mono);font-size:9px;color:var(--text3);margin-top:2px}
+
+/* ══ INPUTS ══ */
+.field{margin-bottom:12px}
+.field-lbl{font-family:var(--ff-mono);font-size:8px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:5px}
+.field input[type=text],.field input[type=number],.field select,.field textarea{width:100%;padding:9px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:var(--ff-body);font-size:13px;outline:none;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green3)}
+.field select{cursor:pointer}
+.field textarea{resize:vertical;min-height:60px;line-height:1.5}
+
+/* TOGGLE CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.chip{font-family:var(--ff-mono);font-size:9px;letter-spacing:.5px;padding:5px 10px;border-radius:3px;border:1px solid var(--border);background:var(--bg3);color:var(--text3);cursor:pointer;transition:all .15s;user-select:none}
+.chip:hover{border-color:var(--border2);color:var(--text2)}
+.chip.on{background:var(--green4);border-color:var(--green3);color:var(--green)}
+
+/* SLIDER */
+.sl-row{margin-bottom:14px}
+.sl-head{display:flex;justify-content:space-between;margin-bottom:5px}
+.sl-name{font-family:var(--ff-mono);font-size:9px;letter-spacing:1px;color:var(--text2)}
+.sl-val{font-family:var(--ff-mono);font-size:9px;color:var(--green);font-weight:500}
+input[type=range]{width:100%;height:3px;-webkit-appearance:none;appearance:none;background:var(--border2);border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--green);cursor:pointer;box-shadow:0 0 6px rgba(74,222,128,.5)}
+
+/* PROGRESS RING */
+.ring-wrap{display:flex;flex-direction:column;align-items:center;gap:3px}
+.ring-svg{transform:rotate(-90deg)}
+.ring-track{fill:none;stroke:var(--border2);stroke-width:5}
+.ring-fill{fill:none;stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)}
+.ring-lbl{font-family:var(--ff-mono);font-size:7px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;text-align:center}
+.ring-num{font-family:var(--ff-head);font-size:22px;letter-spacing:1px;color:var(--green)}
+
+/* TIMELINE */
+.tl{padding-left:20px}
+.tl-item{position:relative;padding:7px 0 7px 18px;border-left:1px solid var(--border)}
+.tl-item:last-child{border-left-color:transparent}
+.tl-item.done{border-left-color:var(--green3)}
+.tl-item.active{border-left-color:var(--green)}
+.tl-dot{position:absolute;left:-4px;top:10px;width:7px;height:7px;border-radius:50%;background:var(--border2);border:1px solid var(--border2)}
+.tl-item.done .tl-dot{background:var(--green3);border-color:var(--green2)}
+.tl-item.active .tl-dot{background:var(--green);border-color:var(--green);box-shadow:0 0 8px rgba(74,222,128,.5)}
+.tl-head{font-family:var(--ff-body);font-size:13px;font-weight:500;color:var(--text)}
+.tl-item.active .tl-head{color:var(--green)}
+.tl-sub{font-family:var(--ff-mono);font-size:9px;color:var(--text3);margin-top:1px}
+
+/* WEEK TABLE */
+.wtable{width:100%;border-collapse:collapse}
+.wtable th{font-family:var(--ff-mono);font-size:8px;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--border);text-align:left}
+.wtable td{font-size:12px;color:var(--text2);padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+.wtable tr:last-child td{border-bottom:none}
+.wtable tr:hover td{background:var(--bg3)}
+.wtable td.mono{font-family:var(--ff-mono);font-size:10px;color:var(--green)}
+.wtable td.gold{color:var(--gold)}
+.wtable td.red{color:var(--red)}
+.wtable .stage-tag{font-family:var(--ff-mono);font-size:7px;letter-spacing:1px;padding:2px 6px;border-radius:2px;text-transform:uppercase;white-space:nowrap}
+.tag-seed{background:#052e16;color:#4ade80;border:1px solid #15803d}
+.tag-veg{background:#052e16;color:#4ade80;border:1px solid #15803d}
+.tag-flower{background:#451a03;color:#fbbf24;border:1px solid #92400e}
+.tag-flush{background:#0c4a6e;color:#60a5fa;border:1px solid #1e40af}
+.tag-late{background:#3b0764;color:#a78bfa;border:1px solid #6b21a8}
+
+/* BUTTON */
+.btn{display:block;width:100%;padding:12px;border-radius:3px;border:1px solid var(--green3);background:var(--green4);color:var(--green);font-family:var(--ff-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .15s;margin-bottom:8px}
+.btn:hover{background:var(--green3);color:#fff}
+.btn.gold{border-color:var(--gold2);background:#1c1000;color:var(--gold)}
+.btn.gold:hover{background:var(--gold2)}
+.btn.sm{padding:8px;font-size:9px}
+
+/* HOUR SCHEDULE - ENHANCED */
+.hour-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.hour-row:last-child{border-bottom:none}
+.hour-row.priority-high{background:linear-gradient(90deg,rgba(251,191,36,0.03),transparent);border-left:2px solid var(--gold);padding-left:10px}
+.hour-row.priority-crit{background:linear-gradient(90deg,rgba(74,222,128,0.04),transparent);border-left:2px solid var(--green);padding-left:10px}
+.hour-time{font-family:var(--ff-mono);font-size:10px;color:var(--green);width:44px;flex-shrink:0;margin-top:2px}
+.hour-dot{width:7px;height:7px;border-radius:50%;background:var(--green3);flex-shrink:0;margin-top:5px}
+.hour-dot.gold{background:var(--gold2)}
+.hour-dot.crit{background:var(--green);box-shadow:0 0 6px rgba(74,222,128,.5)}
+.hour-task{font-size:13px;color:var(--text);font-weight:500}
+.hour-sub{font-family:var(--ff-mono);font-size:9px;color:var(--text3);margin-top:2px;line-height:1.6}
+.hour-badge{display:inline-block;font-family:var(--ff-mono);font-size:7px;letter-spacing:1px;padding:1px 5px;border-radius:2px;text-transform:uppercase;margin-right:4px;margin-bottom:2px}
+.badge-water{background:#0c4a6e;color:#60a5fa;border:1px solid #1e40af}
+.badge-feed{background:#052e16;color:#4ade80;border:1px solid #15803d}
+.badge-env{background:#451a03;color:#fbbf24;border:1px solid #92400e}
+.badge-train{background:#3b0764;color:#a78bfa;border:1px solid #6b21a8}
+.badge-inspect{background:#1c1a00;color:#fbbf24;border:1px solid #92400e}
+
+/* DAILY PLANNER SECTIONS */
+.dp-section{margin-bottom:16px}
+.dp-section-title{font-family:var(--ff-mono);font-size:8px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.dp-section-title::before{content:'';width:3px;height:3px;border-radius:50%;background:var(--green3)}
+.vpd-box{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:12px;margin:8px 0}
+.vpd-display{font-family:var(--ff-head);font-size:32px;letter-spacing:1px;line-height:1}
+.vpd-range{font-family:var(--ff-mono);font-size:9px;color:var(--text3);margin-top:2px}
+.action-list{list-style:none;padding:0}
+.action-list li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2)}
+.action-list li:last-child{border-bottom:none}
+.action-list li::before{content:'▸';color:var(--green3);font-size:11px;margin-top:2px;flex-shrink:0}
+.action-list li.urgent::before{content:'⚠';color:var(--amber);font-size:11px}
+.action-list li.done::before{content:'✓';color:var(--green);font-size:11px}
+.checklist-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.checklist-item:last-child{border-bottom:none}
+.check-box{width:14px;height:14px;border:1px solid var(--border2);border-radius:2px;flex-shrink:0;margin-top:2px;cursor:pointer;transition:all .15s}
+.check-box.checked{background:var(--green3);border-color:var(--green2)}
+.check-text{font-size:12px;color:var(--text2);line-height:1.5}
+.check-note{font-family:var(--ff-mono);font-size:9px;color:var(--text3);margin-top:2px}
+
+/* ROOT METER */
+.root-meter{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin:6px 0}
+.root-fill{height:100%;border-radius:4px;transition:width .8s ease}
+
+/* EC/PPM BAR */
+.ec-bar-wrap{display:flex;align-items:center;gap:8px;margin:4px 0}
+.ec-label{font-family:var(--ff-mono);font-size:9px;color:var(--text3);width:32px}
+.ec-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.ec-fill{height:100%;border-radius:3px;background:var(--cyan);transition:width .6s}
+.ec-val{font-family:var(--ff-mono);font-size:9px;color:var(--cyan);width:36px;text-align:right}
+
+/* RISK BADGE */
+.risk{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:3px;font-family:var(--ff-mono);font-size:8px;letter-spacing:1px;text-transform:uppercase}
+.risk-low{background:#052e16;color:#4ade80;border:1px solid #15803d}
+.risk-med{background:#451a03;color:#fbbf24;border:1px solid #92400e}
+.risk-high{background:#450a0a;color:#ef4444;border:1px solid #7f1d1d}
+
+/* YIELD DISPLAY */
+.yield-trio{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0}
+.yield-box{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:12px;text-align:center}
+.yield-lbl{font-family:var(--ff-mono);font-size:7px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:4px}
+.yield-g{font-family:var(--ff-head);font-size:26px;letter-spacing:1px;line-height:1}
+.yield-g.min{color:var(--text2)}.yield-g.mid{color:var(--green)}.yield-g.max{color:var(--gold)}
+
+/* STRATEGY TABS */
+.strat-tabs{display:flex;gap:4px;margin-bottom:12px}
+.strat-tab{flex:1;padding:8px;border-radius:3px;border:1px solid var(--border);background:var(--bg3);color:var(--text3);font-family:var(--ff-mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;text-align:center}
+.strat-tab:hover{border-color:var(--border2);color:var(--text2)}
+.strat-tab.active{background:var(--green4);border-color:var(--green3);color:var(--green)}
+.strat-pane{display:none}.strat-pane.active{display:block}
+
+/* BLUEPRINT SECTIONS */
+.bp-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.bp-item:last-child{border-bottom:none}
+.bp-num{font-family:var(--ff-mono);font-size:8px;color:var(--text4);width:20px}
+.bp-ico{font-size:14px;width:22px;text-align:center}
+.bp-name{font-size:13px;color:var(--text2);flex:1}
+.bp-status{font-family:var(--ff-mono);font-size:8px;color:var(--green3)}
+
+/* PRINT */
+@media print{
+  .no-print,.nav,.lifecycle,.header-logo sup,.btn{display:none!important}
+  .panel{display:block!important}
+  body{background:#fff;color:#000}
+  .card{border:1px solid #ccc;margin-bottom:8px}
+  .card::before{display:none}
+  .wtable td,.wtable th{color:#000!important;border-color:#ccc!important}
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+@media(max-width:440px){.g3{grid-template-columns:1fr 1fr}.g4{grid-template-columns:1fr 1fr}.header-logo{font-size:44px}}
+</style>
+</head>
+<body>
+
+<!-- ══ PASSWORD SCREEN ══ -->
+<div id="pwScreen">
+  <div class="pw-glow"></div>
+  <div class="pw-box">
+    <div class="pw-logo">KUSH<em>OS</em></div>
+    <div class="pw-sub">Advanced Grow Intelligence</div>
+
+    <!-- ACCESS CODE LOGIN -->
+    <div id="loginView">
+      <div class="pw-label">Access Code</div>
+      <input class="pw-input" type="password" id="pwInput" placeholder="••••••••" maxlength="40" onkeydown="if(event.key==='Enter')checkPw()">
+      <button class="pw-btn" onclick="checkPw()">▶ Unlock System</button>
+      <div class="pw-err" id="pwErr">&nbsp;</div>
+      <div class="pw-foot">
+        Lost your code? <a onclick="showResetView()">Request reset</a> &nbsp;·&nbsp; <a onclick="showBuyView()">Buy access</a>
+      </div>
+    </div>
+
+    <!-- BUY ACCESS VIEW -->
+    <div id="buyView" style="display:none">
+      <div class="pw-commerce">
+        <div class="pw-commerce-lbl">Lifetime Access</div>
+        <div class="pw-commerce-price">R799</div>
+        <div class="pw-commerce-sub">One-time · No subscription · Instant access code</div>
+        <button class="buy-btn" onclick="goPayFast()">💳 Pay with PayFast</button>
+      </div>
+      <div class="pw-foot" style="margin-top:12px">
+        After payment you will receive your unique access code via email within 24hrs.<br><br>
+        <a onclick="showLoginView()">← Back to login</a>
+      </div>
+    </div>
+
+    <!-- RESET VIEW -->
+    <div id="resetView" style="display:none">
+      <div class="pw-label">Reset Request</div>
+      <input class="pw-input" type="email" id="resetEmail" placeholder="your@email.com" style="letter-spacing:0;margin-bottom:10px">
+      <button class="pw-btn" onclick="submitReset()">▶ Send Reset Request</button>
+      <div class="pw-foot" style="margin-top:10px">
+        Your code will be re-sent to the email used at purchase.<br><br>
+        <a onclick="showLoginView()">← Back to login</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div id="toast"></div>
+
+<div class="app" id="mainApp" style="display:none">
+
+<!-- ══ HEADER ══ -->
+<div class="header">
+  <div class="header-eyebrow">Advanced Grow Intelligence Engine</div>
+  <div class="header-logo">KUSH<em>OS</em> <sup>ADV</sup></div>
+  <div class="header-sub">Deep Grow Mode · Full Cultivation Operating System</div>
+  <div class="leaf-center">
+    <div class="leaf-glow"></div>
+    <svg class="leaf-svg" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+      <path class="lb" d="M90 175 Q88 150 90 120 Q92 150 90 175" style="fill:#15803d"/>
+      <line class="lv" x1="90" y1="170" x2="90" y2="90" stroke-width="2"/>
+      <path class="lb" d="M90 90 Q78 60 80 24 Q90 14 100 24 Q102 60 90 90Z"/>
+      <line class="lv" x1="90" y1="90" x2="90" y2="26"/>
+      <path class="lb" d="M85 95 Q65 72 44 44 Q36 34 40 42 Q52 72 82 98Z"/>
+      <line class="lv" x1="83" y1="96" x2="45" y2="46"/>
+      <path class="lb" d="M95 95 Q115 72 136 44 Q144 34 140 42 Q128 72 98 98Z"/>
+      <line class="lv" x1="97" y1="96" x2="135" y2="46"/>
+      <path class="lb" d="M82 102 Q55 85 20 70 Q12 66 16 74 Q46 94 84 108Z"/>
+      <line class="lv" x1="82" y1="104" x2="22" y2="74"/>
+      <path class="lb" d="M98 102 Q125 85 160 70 Q168 66 164 74 Q134 94 96 108Z"/>
+      <line class="lv" x1="98" y1="104" x2="158" y2="74"/>
+      <path class="lb" d="M82 110 Q60 105 32 105 Q24 105 28 112 Q54 116 84 116Z"/>
+      <line class="lv" x1="82" y1="112" x2="30" y2="110"/>
+      <path class="lb" d="M98 110 Q120 105 148 105 Q156 105 152 112 Q126 116 96 116Z"/>
+      <line class="lv" x1="98" y1="112" x2="150" y2="110"/>
+      <ellipse class="lb" cx="90" cy="108" rx="14" ry="18" style="fill:#22c55e;opacity:.9"/>
+    </svg>
+  </div>
+  <div class="lifecycle" id="lifecycle">
+    <div class="lc-node done" data-idx="0"><div class="lc-pip"></div><div class="lc-txt">Germ</div></div>
+    <div class="lc-seg done"></div>
+    <div class="lc-node done" data-idx="1"><div class="lc-pip"></div><div class="lc-txt">Seedling</div></div>
+    <div class="lc-seg done"></div>
+    <div class="lc-node active" data-idx="2"><div class="lc-pip"></div><div class="lc-txt">Veg</div></div>
+    <div class="lc-seg"></div>
+    <div class="lc-node" data-idx="3"><div class="lc-pip"></div><div class="lc-txt">Preflower</div></div>
+    <div class="lc-seg"></div>
+    <div class="lc-node" data-idx="4"><div class="lc-pip"></div><div class="lc-txt">Flower</div></div>
+    <div class="lc-seg"></div>
+    <div class="lc-node" data-idx="5"><div class="lc-pip"></div><div class="lc-txt">Flush</div></div>
+    <div class="lc-seg"></div>
+    <div class="lc-node" data-idx="6"><div class="lc-pip"></div><div class="lc-txt">Harvest</div></div>
+    <div class="lc-seg"></div>
+    <div class="lc-node" data-idx="7"><div class="lc-pip"></div><div class="lc-txt">Dry</div></div>
+    <div class="lc-seg"></div>
+    <div class="lc-node" data-idx="8"><div class="lc-pip"></div><div class="lc-txt">Cure</div></div>
+  </div>
+</div>
+
+<!-- ══ NAV ══ -->
+<div class="nav no-print">
+  <button class="nav-btn active" data-p="foundation">Foundation</button>
+  <button class="nav-btn" data-p="rootzone">Root Zone</button>
+  <button class="nav-btn" data-p="water">Water Engine</button>
+  <button class="nav-btn" data-p="feed">Feed Engine</button>
+  <button class="nav-btn" data-p="schedule">Daily Planner</button>
+  <button class="nav-btn" data-p="cycles">Cycle Intel</button>
+  <button class="nav-btn" data-p="yield">Yield Lab</button>
+  <button class="nav-btn" data-p="resources">Resources</button>
+  <button class="nav-btn" data-p="blueprint">Blueprint</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL: FOUNDATION
+══════════════════════════════════════ -->
+<div class="panel active" id="panel-foundation">
+  <div class="card">
+    <div class="card-title">Genetics</div>
+    <div class="g2">
+      <div class="field"><div class="field-lbl">Strain Name</div><input type="text" id="strainName" value="Blue Dream" oninput="recalc()"></div>
+      <div class="field"><div class="field-lbl">Genetic Lineage</div><input type="text" id="lineage" value="Blueberry × Haze" oninput="recalc()"></div>
+    </div>
+    <div class="g4">
+      <div class="field"><div class="field-lbl">Indica %</div><input type="number" id="indicaPct" value="40" min="0" max="100" oninput="recalc()"></div>
+      <div class="field"><div class="field-lbl">Sativa %</div><input type="number" id="sativaPct" value="60" min="0" max="100" oninput="recalc()"></div>
+      <div class="field"><div class="field-lbl">THC %</div><input type="number" id="thcPct" value="21" min="0" max="35" oninput="recalc()"></div>
+      <div class="field"><div class="field-lbl">CBD %</div><input type="number" id="cbdPct" value="1" min="0" max="25" oninput="recalc()"></div>
+    </div>
+    <div class="g2">
+      <div class="field">
+        <div class="field-lbl">Photoperiod Type</div>
+        <select id="photoperiod" onchange="recalc()">
+          <option value="photo">Photoperiod</option>
+          <option value="auto">Autoflower</option>
+        </select>
+      </div>
+      <div class="field">
+        <div class="field-lbl">Current Stage</div>
+        <select id="currentStage" onchange="recalc();syncLifecycle()">
+          <option value="0">Germination</option>
+          <option value="1">Seedling</option>
+          <option value="2" selected>Vegetative</option>
+          <option value="3">Preflower</option>
+          <option value="4">Flowering</option>
+          <option value="5">Flushing</option>
+          <option value="6">Harvest</option>
+          <option value="7">Drying</option>
+          <option value="8">Curing</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Starting Method</div>
+    <div class="field-lbl" style="margin-bottom:6px">Origin</div>
+    <div class="chips" id="startChips">
+      <div class="chip on" data-g="start" data-v="seed">Seed</div>
+      <div class="chip" data-g="start" data-v="clone">Clone</div>
+      <div class="chip" data-g="start" data-v="mother_clone">Mother Clone</div>
+      <div class="chip" data-g="start" data-v="tissue_culture">Tissue Culture</div>
+    </div>
+    <div class="field-lbl" style="margin-bottom:6px;margin-top:8px">Seed Type</div>
+    <div class="chips" id="seedChips">
+      <div class="chip" data-g="seed" data-v="regular">Regular</div>
+      <div class="chip on" data-g="seed" data-v="feminized">Feminized</div>
+      <div class="chip" data-g="seed" data-v="autoflower">Autoflower</div>
+      <div class="chip" data-g="seed" data-v="fast_flower">Fast Flowering</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Grow Setup</div>
+    <div class="g2">
+      <div class="field">
+        <div class="field-lbl">Medium</div>
+        <select id="medium" onchange="recalc()">
+          <option value="soil">Soil</option>
+          <option value="living_soil">Living Soil</option>
+          <option value="coco" selected>Coco / Soilless</option>
+          <option value="hydro">Hydroponics</option>
+          <option value="dwc">DWC</option>
+          <option value="aero">Aeroponics</option>
+          <option value="rockwool">Rockwool</option>
+          <option value="peat">Peat</option>
+        </select>
+      </div>
+      <div class="field">
+        <div class="field-lbl">Pot System</div>
+        <select id="potSystem" onchange="recalc()">
+          <option value="fabric" selected>Fabric Pot</option>
+          <option value="plastic">Plastic Pot</option>
+          <option value="air_pot">Air Pot</option>
+          <option value="hydro_bucket">Hydro Bucket</option>
+          <option value="raised_bed">Raised Bed</option>
+        </select>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="field">
+        <div class="field-lbl">Current Pot Size</div>
+        <select id="potSize" onchange="recalc()">
+          <option value="0.5">500ml cup</option>
+          <option value="1">1L</option>
+          <option value="3" selected>3L</option>
+          <option value="5">5L</option>
+          <option value="7">7L</option>
+          <option value="10">10L</option>
+          <option value="15">15L</option>
+          <option value="20">20L</option>
+          <option value="30">30L</option>
+          <option value="50">50L</option>
+        </select>
+      </div>
+      <div class="field">
+        <div class="field-lbl">Plant Count</div>
+        <select id="plantCount" onchange="recalc()">
+          <option value="1">1 plant</option>
+          <option value="2">2 plants</option>
+          <option value="4" selected>4 plants</option>
+          <option value="6">6 plants</option>
+          <option value="9">9 plants</option>
+          <option value="12">12 plants</option>
+        </select>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="field">
+        <div class="field-lbl">Grow Space</div>
+        <select id="growSpace" onchange="recalc()">
+          <option value="2x2">2×2 ft (0.37m²)</option>
+          <option value="3x3">3×3 ft (0.84m²)</option>
+          <option value="4x4" selected>4×4 ft (1.49m²)</option>
+          <option value="5x5">5×5 ft (2.32m²)</option>
+          <option value="4x8">4×8 ft (2.97m²)</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      <div class="field">
+        <div class="field-lbl">Light Power (W)</div>
+        <input type="number" id="watts" value="600" min="100" max="2000" oninput="recalc()">
+      </div>
+    </div>
+    <div class="g2">
+      <div class="field">
+        <div class="field-lbl">Veg Duration (weeks)</div>
+        <input type="number" id="vegWeeks" value="6" min="2" max="16" oninput="recalc()">
+      </div>
+      <div class="field">
+        <div class="field-lbl">Flower Duration (weeks)</div>
+        <input type="number" id="flowerWeeks" value="8" min="6" max="16" oninput="recalc()">
+      </div>
+    </div>
+    <div class="g2">
+      <div class="field">
+        <div class="field-lbl">CO₂ Supplemented</div>
+        <select id="co2" onchange="recalc()">
+          <option value="no">No — Ambient (~400ppm)</option>
+          <option value="yes" selected>Yes — Enriched</option>
+        </select>
+      </div>
+      <div class="field">
+        <div class="field-lbl">Training Methods</div>
+        <div class="chips" id="trainChips" style="margin-top:2px">
+          <div class="chip on" data-g="train" data-v="lst">LST</div>
+          <div class="chip on" data-g="train" data-v="scrog">SCROG</div>
+          <div class="chip" data-g="train" data-v="top">Topping</div>
+          <div class="chip" data-g="train" data-v="fim">FIM</div>
+          <div class="chip" data-g="train" data-v="manifold">Manifold</div>
+          <div class="chip" data-g="train" data-v="defoliation">Defoliation</div>
+          <div class="chip" data-g="train" data-v="supercrop">Supercrop</div>
+          <div class="chip" data-g="train" data-v="lollipop">Lollipop</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Environment Profile</div>
+    <div class="g2">
+      <div class="field"><div class="field-lbl">Day Temp (°C)</div><input type="number" id="tempDay" value="26" min="15" max="35" oninput="recalc()"></div>
+      <div class="field"><div class="field-lbl">Night Temp (°C)</div><input type="number" id="tempNight" value="20" min="10" max="28" oninput="recalc()"></div>
+    </div>
+    <div class="g2">
+      <div class="field"><div class="field-lbl">Day Humidity (RH%)</div><input type="number" id="humDay" value="55" min="20" max="90" oninput="recalc()"></div>
+      <div class="field"><div class="field-lbl">Night Humidity (RH%)</div><input type="number" id="humNight" value="50" min="20" max="90" oninput="recalc()"></div>
+    </div>
+    <div class="field"><div class="field-lbl">Electricity Price (R/kWh)</div><input type="number" id="elecPrice" value="2.80" min="0.1" max="20" step="0.1" oninput="recalc()"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL: ROOT ZONE
+══════════════════════════════════════ -->
+<div class="panel" id="panel-rootzone">
+  <div class="card">
+    <div class="card-title">Root Zone Intelligence</div>
+    <div class="g2">
+      <div class="stat"><div class="stat-lbl">Current Pot</div><div class="stat-val sm" id="rz-pot">3L</div><div class="stat-unit">fabric pot</div></div>
+      <div class="stat"><div class="stat-lbl">Root Saturation</div><div class="stat-val amber" id="rz-sat">78%</div><div class="stat-unit">of pot volume</div></div>
+    </div>
+    <div style="margin:8px 0">
+      <div class="stat-lbl" style="font-family:var(--ff-mono);font-size:8px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:6px">Root Mass Estimate</div>
+      <div class="root-meter"><div class="root-fill" id="rz-bar" style="width:78%;background:linear-gradient(90deg,var(--green3),var(--amber))"></div></div>
+    </div>
+    <div class="g3" style="margin-top:12px">
+      <div class="stat"><div class="stat-lbl">Transplant</div><div class="stat-val sm gold" id="rz-transplant">5 days</div><div class="stat-unit">recommended</div></div>
+      <div class="stat"><div class="stat-lbl">Next Pot</div><div class="stat-val sm" id="rz-next">10L</div><div class="stat-unit">target size</div></div>
+      <div class="stat"><div class="stat-lbl">Root Speed</div><div class="stat-val sm" id="rz-speed">Med</div><div class="stat-unit">expansion rate</div></div>
+    </div>
+    <div style="margin-top:12px" class="card-flat">
+      <div class="stat-lbl" style="font-family:var(--ff-mono);font-size:8px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:6px">Pot Progression Roadmap</div>
+      <div id="potRoadmap"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Drainage & Water Holding</div>
+    <div class="g2">
+      <div class="stat"><div class="stat-lbl">Drainage Speed</div><div class="stat-val sm" id="rz-drain">Fast</div><div class="stat-unit" id="rz-drain-note">coco drains well</div></div>
+      <div class="stat"><div class="stat-lbl">Water Hold Capacity</div><div class="stat-val sm" id="rz-whc">Low–Med</div><div class="stat-unit">relative to volume</div></div>
+    </div>
+    <div class="card-flat" style="margin-top:8px">
+      <div class="stat-lbl" style="font-family:var(--ff-mono);font-size:8px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:4px">Medium Notes</div>
+      <div id="rz-medium-notes" style="font-size:12px;color:var(--text2);line-height:1.7"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL: WATER ENGINE
+══════════════════════════════════════ -->
+<div class="panel" id="panel-water">
+  <div class="card">
+    <div class="card-title">Deep Water Engine — Week-by-Week</div>
+    <div class="g3" style="margin-bottom:12px">
+      <div class="stat"><div class="stat-lbl">Today's Amount</div><div class="stat-val" id="w-today-amt">—</div><div class="stat-unit" id="w-today-unit">per plant</div></div>
+      <div class="stat"><div class="stat-lbl">Frequency</div><div class="stat-val sm" id="w-today-freq">—</div><div class="stat-unit">hrs between feeds</div></div>
+      <div class="stat"><div class="stat-lbl">Runoff Target</div><div class="stat-val sm amber" id="w-today-runoff">—</div><div class="stat-unit">runoff %</div></div>
+    </div>
+    <div class="sl-row">
+      <div class="sl-head"><span class="sl-name">Current Grow Week</span><span class="sl-val" id="lbl-week">Week 3</span></div>
+      <input type="range" id="sl-week" min="1" max="20" value="3" oninput="updateWaterWeek()">
+    </div>
+    <div class="card-flat">
+      <div class="stat-lbl" style="font-family:var(--ff-mono);font-size:8px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:8px">Full Water Schedule</div>
+      <table class="wtable">
+        <thead><tr><th>Week</th><th>Stage</th><th>Amount/plant</th><th>Freq (hrs)</th><th>Dryback %</th><th>Runoff</th><th>Notes</th></tr></thead>
+        <tbody id="waterTable"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Total Water Projection</div>
+    <div class="g2">
+      <div class="stat"><div class="stat-lbl">Total Water</div><div class="stat-val" id="w-total">—</div><div class="stat-unit">full grow</div></div>
+      <div class="stat"><div class="stat-lbl">Per Plant</div><div class="stat-val sm" id="w-per-plant">—</div><div class="stat-unit">avg/plant</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL: FEED ENGINE
+══════════════════════════════════════ -->
+<div class="panel" id="panel-feed">
+  <div class="card">
+    <div class="card-title">Feeding Intelligence Configuration</div>
+    <div class="g2">
+      <div class="field">
+        <div class="field-lbl">Nutrient Type</div>
+        <div class="chips" id="nutTypeChips">
+          <div class="chip on" data-g="nuttype" data-v="synthetic">Synthetic</div>
+          <div class="chip" data-g="nuttype" data-v="organic">Organic</div>
+          <div class="chip" data-g="nuttype" data-v="hybrid">Hybrid</div>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-lbl">Brand</div>
+        <select id="nutrientBrand" onchange="recalc()">
+          <option value="advanced">Advanced Nutrients</option>
+          <option value="gh">General Hydroponics</option>
+          <option value="athena">Athena</option>
+          <option value="canna">Canna</option>
+          <option value="foxfarm">Fox Farm</option>
+          <option value="custom" selected>Custom / Generic</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-lbl">Feed Intensity</div>
+      <div class="chips" id="feedChips">
+        <div class="chip" data-g="feed" data-v="minimum">Minimum</div>
+        <div class="chip on" data-g="feed" data-v="balanced">Balanced</div>
+        <div class="chip" data-g="feed" data-v="maximum">Maximum</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Feed Strategies</div>
+    <div class="strat-tabs">
+      <div class="strat-tab active" data-s="minimum">Minimum</div>
+      <div class="strat-tab" data-s="balanced">Balanced</div>
+      <div class="strat-tab" data-s="maximum">Maximum</div>
+    </div>
+    <div class="strat-pane active" id="strat-minimum">
+      <div class="card-flat" style="margin-bottom:6px">
+        <div style="font-family:var(--ff-mono);font-size:9px;color:var(--text3);margin-bottom:6px">MINIMUM STRATEGY · Conservative approach — 65% dose, longer veg recovery, reduces lockout risk</div>
+        <table class="wtable" id="feed-min-table"><thead><tr><th>Week</th><th>Stage</th><th>Base (ml/L)</th><th>Cal-Mg</th><th>Additive</th><th>EC</th><th>PPM</th><th>pH</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+    <div class="strat-pane" id="strat-balanced">
+      <div class="card-flat" style="margin-bottom:6px">
+        <div style="font-family:var(--ff-mono);font-size:9px;color:var(--text3);margin-bottom:6px">BALANCED STRATEGY · Standard manufacturer doses — proven performance for most grows</div>
+        <table class="wtable" id="feed-bal-table"><thead><tr><th>Week</th><th>Stage</th><th>Base (ml/L)</th><th>Cal-Mg</th><th>Additive</th><th>EC</th><th>PPM</th><th>pH</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+    <div class="strat-pane" id="strat-maximum">
+      <div class="card-flat" style="margin-bottom:6px">
+        <div style="font-family:var(--ff-mono);font-size:9px;color:var(--text3);margin-bottom:6px">MAXIMUM STRATEGY · Aggressive push 120% — requires daily monitoring, experienced growers only</div>
+        <table class="wtable" id="feed-max-table"><thead><tr><th>Week</th><th>Stage</th><th>Base (ml/L)</th><th>Cal-Mg</th><th>Additive</th><th>EC</th><th>PPM</th><th>pH</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Live Week EC / PPM</div>
+    <div class="sl-row">
+      <div class="sl-head"><span class="sl-name">View Feed Week</span><span class="sl-val" id="lbl-feedweek">Week 3</span></div>
+      <input type="range" id="sl-feedweek" min="1" max="20" value="3" oninput="updateFeedWeek()">
+    </div>
+    <div id="ecDisplay"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL: DAILY PLANNER (ENHANCED)
+══════════════════════════════════════ -->
+<div class="panel" id="panel-schedule">
+  <div class="card">
+    <div class="card-title">Daily Planner Configuration</div>
+    <div class="g2">
+      <div class="field">
+        <div class="field-lbl">Lights-On Time</div>
+        <select id="lightsOn" onchange="buildDailySchedule()">
+          <option value="6">06:00</option>
+          <option value="7">07:00</option>
+          <option value="8" selected>08:00</option>
+          <option value="9">09:00</option>
+          <option value="12">12:00</option>
+          <option value="18">18:00 (night flip)</option>
+          <option value="20">20:00 (night flip)</option>
+        </select>
+      </div>
+      <div class="field">
+        <div class="field-lbl">Light Cycle</div>
+        <select id="lightCycle" onchange="buildDailySchedule()">
+          <option value="18/6" selected>18/6 — Vegetative</option>
+          <option value="20/4">20/4 — Fast veg</option>
+          <option value="24/0">24/0 — Auto / seedling</option>
+          <option value="12/12">12/12 — Flowering</option>
+          <option value="11/13">11/13 — Late flower push</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- VPD CARD -->
+  <div class="card">
+    <div class="card-title">Live VPD &amp; Environment Targets</div>
+    <div class="g3" style="margin-bottom:12px">
+      <div class="stat"><div class="stat-lbl">VPD Day</div><div class="stat-val" id="vpd-day-val" style="color:var(--cyan)">1.10</div><div class="stat-unit">kPa target</div></div>
+      <div class="stat"><div class="stat-lbl">VPD Night</div><div class="stat-val sm" id="vpd-night-val" style="color:var(--blue)">0.80</div><div class="stat-unit">kPa target</div></div>
+      <div class="stat"><div class="stat-lbl">VPD Status</div><div class="stat-val sm" id="vpd-status" style="color:var(--green)">Ideal</div><div class="stat-unit" id="vpd-range-lbl">0.8–1.2 kPa</div></div>
+    </div>
+    <div id="vpdDetails" style="font-family:var(--ff-mono);font-size:9px;color:var(--text3);line-height:1.8"></div>
+  </div>
+
+  <!-- HOUR-BY-HOUR SCHEDULE -->
+  <div class="card">
+    <div class="card-title">Hour-by-Hour Daily Schedule</div>
+    <div id="dailySchedule"></div>
+  </div>
+
+  <!-- STAGE-SPECIFIC STEP-BY-STEP GUIDE -->
+  <div class="card">
+    <div class="card-title">Step-by-Step Stage Guide</div>
+    <div id="stageGuide"></div>
+  </div>
+
+  <!-- DAILY CHECKLIST -->
+  <div class="card">
+    <div class="card-title">Daily Action Checklist</div>
+    <div id="dailyChecklist"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL: CYCLE INTELLIGENCE
+══════════════════════════════════════ -->
+<div class="panel" id="panel-cycles">
+  <div class="card">
+    <div class="card-title">Growth Cycle Intelligence</div>
+    <div class="g2" style="margin-bottom:10px">
+      <button class="btn sm" onclick="setStage(0)">Germination</button>
+      <button class="btn sm" onclick="setStage(1)">Seedling</button>
+      <button class="btn sm" onclick="setStage(2)">Vegetative</button>
+      <button class="btn sm" onclick="setStage(3)">Preflower</button>
+    </div>
+    <div class="g2">
+      <button class="btn sm" onclick="setStage(4)">Flowering</button>
+      <button class="btn sm" onclick="setStage(5)">Flush</button>
+      <button class="btn sm" onclick="setStage(6)">Harvest</button>
+      <button class="btn sm" onclick="setStage(7)">Dry</button>
+    </div>
+  </div>
+  <div class="card" id="cycle-detail"></div>
+  <div class="card">
+    <div class="card-title">Full Grow Timeline</div>
+    <div class="tl" id="fullTimeline"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL: YIELD LAB
+══════════════════════════════════════ -->
+<div class="panel" id="panel-yield">
+  <div class="card">
+    <div class="card-title">Yield Prediction Engine</div>
+    <div style="display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin:12px 0 20px">
+      <div class="ring-wrap">
+        <svg class="ring-svg" width="100" height="100" viewBox="0 0 100 100">
+          <circle class="ring-track" cx="50" cy="50" r="38"/>
+          <circle class="ring-fill" id="ry-ring" cx="50" cy="50" r="38" stroke-dasharray="238.8" stroke-dashoffset="36" style="stroke:var(--green)"/>
+        </svg>
+        <div class="ring-lbl">Yield Potential</div>
+        <div class="ring-num" id="ry-pct">85%</div>
+      </div>
+      <div class="ring-wrap">
+        <svg class="ring-svg" width="100" height="100" viewBox="0 0 100 100">
+          <circle class="ring-track" cx="50" cy="50" r="38"/>
+          <circle class="ring-fill" id="ry-qual" cx="50" cy="50" r="38" stroke-dasharray="238.8" stroke-dashoffset="50" style="stroke:var(--gold)"/>
+        </svg>
+        <div class="ring-lbl">Quality Score</div>
+        <div class="ring-num" style="color:var(--gold)" id="ry-qual-pct">79%</div>
+      </div>
+    </div>
+    <div class="yield-trio">
+      <div class="yield-box"><div class="yield-lbl">Minimum</div><div class="yield-g min" id="yl-min">280g</div><div class="stat-unit" id="yl-min-ppw" style="text-align:center"></div></div>
+      <div class="yield-box"><div class="yield-lbl">Balanced</div><div class="yield-g mid" id="yl-mid">420g</div><div class="stat-unit" id="yl-mid-ppw" style="text-align:center"></div></div>
+      <div class="yield-box"><div class="yield-lbl">Maximum</div><div class="yield-g max" id="yl-max">610g</div><div class="stat-unit" id="yl-max-ppw" style="text-align:center"></div></div>
+    </div>
+    <div class="card-flat">
+      <div class="stat-lbl" style="font-family:var(--ff-mono);font-size:8px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:8px">Yield Calculation Breakdown</div>
+      <div id="yieldBreakdown"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Harvest Timeline</div>
+    <div style="text-align:center;padding:14px 0">
+      <div style="font-family:var(--ff-mono);font-size:8px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:6px">Estimated Harvest Date</div>
+      <div style="font-family:var(--ff-head);font-size:32px;color:var(--gold);letter-spacing:2px" id="harvestDate">—</div>
+      <div style="font-family:var(--ff-mono);font-size:10px;color:var(--text3);margin-top:4px">Days remaining: <span style="color:var(--green)" id="harvestDays">—</span></div>
+    </div>
+    <div class="tl" id="harvestTL"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Risk Analysis</div>
+    <div id="riskAnalysis"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL: RESOURCES
+══════════════════════════════════════ -->
+<div class="panel" id="panel-resources">
+  <div class="card">
+    <div class="card-title">Electricity Calculator</div>
+    <div class="g2">
+      <div class="sl-row">
+        <div class="sl-head"><span class="sl-name">Hours on per day</span><span class="sl-val" id="lbl-hrs">18h</span></div>
+        <input type="range" id="sl-hrs" min="12" max="24" value="18" oninput="calcResources()">
+      </div>
+    </div>
+    <div class="g3" style="margin:12px 0">
+      <div class="stat"><div class="stat-lbl">Total kWh</div><div class="stat-val" id="res-kwh">—</div><div class="stat-unit">full grow</div></div>
+      <div class="stat"><div class="stat-lbl">Est. Cost</div><div class="stat-val sm gold" id="res-cost">—</div><div class="stat-unit">electricity</div></div>
+      <div class="stat"><div class="stat-lbl">Cost/Gram</div><div class="stat-val sm" id="res-cpg">—</div><div class="stat-unit">R per gram</div></div>
+    </div>
+    <div id="elecBreakdown"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Water Usage</div>
+    <div class="g2" style="margin-bottom:12px">
+      <div class="stat"><div class="stat-lbl">Total Water</div><div class="stat-val blue" id="res-water">—</div><div class="stat-unit">full grow</div></div>
+      <div class="stat"><div class="stat-lbl">Cost Estimate</div><div class="stat-val sm" id="res-watercost">—</div><div class="stat-unit">at R0.02/L</div></div>
+    </div>
+    <div id="waterBars"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Drying &amp; Curing Schedule</div>
+    <div class="g2" style="margin-bottom:8px">
+      <div class="stat"><div class="stat-lbl">Dry Temp</div><div class="stat-val sm">16–18°C</div><div class="stat-unit">60–65°F</div></div>
+      <div class="stat"><div class="stat-lbl">Dry Humidity</div><div class="stat-val sm">58–62%</div><div class="stat-unit">aim 60%</div></div>
+    </div>
+    <div class="sl-row">
+      <div class="sl-head"><span class="sl-name">Drying Progress</span><span class="sl-val" id="lbl-dryday">Day 1</span></div>
+      <input type="range" id="sl-dryday" min="1" max="14" value="1" oninput="updateDry()">
+    </div>
+    <div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin:4px 0 12px">
+      <div id="dry-bar" style="height:100%;width:7%;background:var(--purple);border-radius:3px;transition:width .5s"></div>
+    </div>
+    <div id="cureSchedule"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL: BLUEPRINT
+══════════════════════════════════════ -->
+<div class="panel" id="panel-blueprint">
+  <div class="card">
+    <div class="card-title">Grow Intelligence Blueprint — Contents</div>
+    <div id="bpList"></div>
+  </div>
+  <button class="btn" onclick="generateBlueprint()">▶ Generate Complete Blueprint</button>
+  <button class="btn gold" onclick="window.print()">🖨 Print / Export PDF</button>
+  <div id="bpOutput" style="display:none">
+    <div class="card" style="margin-top:14px">
+      <div style="text-align:center;padding:8px 0 18px">
+        <div style="font-family:var(--ff-head);font-size:30px;letter-spacing:3px;color:var(--green)">KUSHOS GROW BLUEPRINT</div>
+        <div style="font-family:var(--ff-mono);font-size:9px;color:var(--text3);margin-top:4px" id="bpMeta"></div>
+      </div>
+      <div id="bpContent"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// ════════════════════════════════════════════════════════
+//  KUSHOS — MULTI-USER SHA-256 ACCESS SYSTEM
+//  Ready for Netlify + GitHub + PayFast deployment
+// ════════════════════════════════════════════════════════
+
+// ── SHA-256 helper ──
+async function sha256(message){
+  const msgUint8=new TextEncoder().encode(message);
+  const hashBuffer=await crypto.subtle.digest('SHA-256',msgUint8);
+  const hashArray=Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── USER DATABASE (dynamic — fetched from Netlify Blob store) ──
+// New paid users are written automatically by the payfast-notify function.
+// The admin entry below is the permanent fallback if the API is unreachable.
+// DO NOT remove this fallback — it ensures you can always log in.
+let USERS = [
+  // ADMIN — code: kushos2026!  ← change this in payfast-notify env or here
+  { hash:'57b1efe4d97af341cf092d17d8f044c65e040af45a31b322f9d974cc9c217975', role:'admin', label:'Admin' },
+  // MASTER KEY — SHA-256: dedd520055c4aded26664c07719a6d53856a7d76707483854d80f691721539eb
+  { hash:'dedd520055c4aded26664c07719a6d53856a7d76707483854d80f691721539eb', role:'admin', label:'Master' },
+];
+
+// Fetch the live user list from the Netlify serverless function which reads
+// from Netlify Blobs. This means new purchasers are activated instantly
+// without any code change or redeploy.
+async function loadUsers(){
+  try {
+    const res = await fetch('/api/get-users', { cache: 'no-store' });
+    if (!res.ok) throw new Error('non-200');
+    const data = await res.json();
+    if (Array.isArray(data.users) && data.users.length > 0) {
+      // Merge: keep local admin, add all remote users (dedup by hash)
+      const localHashes = new Set(USERS.map(u=>u.hash));
+      data.users.forEach(u => { if (!localHashes.has(u.hash)) USERS.push(u); });
+    }
+  } catch(e) {
+    // Silently fall back to the hardcoded USERS array above
+    console.warn('KushOS: could not fetch remote users, using local list');
+  }
+}
+
+// ── PAYFAST CONFIG ──
+// Replace with your real PayFast merchant details after account setup
+const PAYFAST = {
+  merchantId:  'YOUR_MERCHANT_ID',       // from PayFast dashboard
+  merchantKey: 'YOUR_MERCHANT_KEY',      // from PayFast dashboard
+  returnUrl:   'https://YOUR-DOMAIN.netlify.app/?payment=success',
+  cancelUrl:   'https://YOUR-DOMAIN.netlify.app/?payment=cancel',
+  notifyUrl:   'https://YOUR-DOMAIN.netlify.app/api/payfast-notify', // Netlify function
+  amount:      '799.00',
+  itemName:    'KushOS Advanced Lifetime Access',
+};
+
+// ── VIEWS ──
+function showLoginView(){ switchView('loginView'); document.getElementById('pwInput').focus(); }
+function showBuyView()  { switchView('buyView'); }
+function showResetView(){ switchView('resetView'); document.getElementById('resetEmail').focus(); }
+function switchView(id){
+  ['loginView','buyView','resetView'].forEach(v=>{
+    document.getElementById(v).style.display = v===id ? 'block' : 'none';
+  });
+}
+
+// ── LOGIN ──
+async function checkPw(){
+  const val=document.getElementById('pwInput').value.trim();
+  if(!val) return;
+  const inputHash=await sha256(val);
+  const user=USERS.find(u=>u.hash===inputHash);
+  if(user){
+    sessionStorage.setItem('kos_auth','1');
+    sessionStorage.setItem('kos_role', user.role);
+    document.getElementById('pwScreen').style.display='none';
+    document.getElementById('mainApp').style.display='block';
+    initChips(); recalc();
+  } else {
+    const err=document.getElementById('pwErr');
+    err.textContent='⚠ Access denied — incorrect code';
+    document.getElementById('pwInput').style.borderColor='var(--red)';
+    setTimeout(()=>{err.textContent='\u00a0';document.getElementById('pwInput').style.borderColor='var(--border)';},2500);
+  }
+}
+
+// ── PAYFAST REDIRECT ──
+// When you have your real PayFast merchant details, replace the config above.
+// This builds a standard PayFast payment page redirect.
+function goPayFast(){
+  const pf = PAYFAST;
+  if(pf.merchantId==='YOUR_MERCHANT_ID'){
+    showToast('PayFast not configured yet — add merchant details to PAYFAST config');
+    return;
+  }
+  const params = new URLSearchParams({
+    merchant_id:  pf.merchantId,
+    merchant_key: pf.merchantKey,
+    return_url:   pf.returnUrl,
+    cancel_url:   pf.cancelUrl,
+    notify_url:   pf.notifyUrl,
+    amount:       pf.amount,
+    item_name:    pf.itemName,
+  });
+  window.location.href = 'https://www.payfast.co.za/eng/process?' + params.toString();
+}
+
+// ── RESET REQUEST ──
+// When hosted on Netlify, point this at a Netlify Form or serverless function.
+function submitReset(){
+  const email=document.getElementById('resetEmail').value.trim();
+  if(!email || !email.includes('@')){ showToast('Enter a valid email address'); return; }
+  // TODO: POST to your Netlify form / serverless function with the email
+  // fetch('/api/reset', { method:'POST', body: JSON.stringify({email}) })
+  showToast('Reset request sent — check your inbox');
+  setTimeout(showLoginView, 2500);
+}
+
+// ── TOAST NOTIFICATION ──
+function showToast(msg, duration=3000){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), duration);
+}
+
+// ── AUTO-LOGIN if session still valid ──
+document.addEventListener('DOMContentLoaded', async ()=>{
+  if(sessionStorage.getItem('kos_auth')==='1'){
+    document.getElementById('pwScreen').style.display='none';
+    document.getElementById('mainApp').style.display='block';
+    initChips(); recalc();
+    return;
+  }
+  // Pre-load remote users so they're ready when the user hits Enter
+  await loadUsers();
+
+  // Check URL for PayFast return
+  const params=new URLSearchParams(window.location.search);
+  if(params.get('payment')==='success'){
+    showToast('✅ Payment confirmed! Your access code is on its way by email.');
+  }
+  document.getElementById('pwInput').focus();
+});
+
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
+const S = {
+  strainName:'Blue Dream', lineage:'Blueberry × Haze',
+  indica:40, sativa:60, thc:21, cbd:1,
+  photoperiod:'photo', currentStage:2,
+  startMethod:'seed', seedType:'feminized',
+  medium:'coco', potSystem:'fabric', potSize:3, plantCount:4,
+  growSpace:'4x4', watts:600, vegWeeks:6, flowerWeeks:8,
+  co2:'yes', training:['lst','scrog'],
+  tempDay:26, tempNight:20, humDay:55, humNight:50,
+  elecPrice:2.80,
+  nutrientType:'synthetic', nutrientBrand:'custom', feedIntensity:'balanced',
+  lightsOn:8, lightCycle:'18/6',
+  hours:18, dryDay:1
+};
+
+// ════════════════════════════════════════════════════════
+//  CHIP GROUPS
+// ════════════════════════════════════════════════════════
+function initChips(){
+  document.querySelectorAll('.chip').forEach(c=>{
+    c.addEventListener('click',()=>{
+      const g=c.dataset.g, v=c.dataset.v;
+      if(['start','seed','nuttype','feed'].includes(g)){
+        document.querySelectorAll(`.chip[data-g="${g}"]`).forEach(x=>x.classList.remove('on'));
+        c.classList.add('on');
+        if(g==='start') S.startMethod=v;
+        if(g==='seed') S.seedType=v;
+        if(g==='nuttype') S.nutrientType=v;
+        if(g==='feed') S.feedIntensity=v;
+      } else {
+        c.classList.toggle('on');
+        S.training=Array.from(document.querySelectorAll('.chip[data-g="train"].on')).map(x=>x.dataset.v);
+      }
+      recalc();
+    });
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//  READ INPUTS
+// ════════════════════════════════════════════════════════
+function readInputs(){
+  const gv=id=>document.getElementById(id)?.value||null;
+  S.strainName=gv('strainName')||'Unknown';
+  S.lineage=gv('lineage')||'';
+  S.indica=parseInt(gv('indicaPct'))||40;
+  S.sativa=parseInt(gv('sativaPct'))||60;
+  S.thc=parseFloat(gv('thcPct'))||20;
+  S.cbd=parseFloat(gv('cbdPct'))||0;
+  S.photoperiod=gv('photoperiod')||'photo';
+  S.currentStage=parseInt(gv('currentStage')||'2');
+  S.medium=gv('medium')||'coco';
+  S.potSystem=gv('potSystem')||'fabric';
+  S.potSize=parseFloat(gv('potSize'))||3;
+  S.plantCount=parseInt(gv('plantCount'))||4;
+  S.growSpace=gv('growSpace')||'4x4';
+  S.watts=parseInt(gv('watts'))||600;
+  S.vegWeeks=parseInt(gv('vegWeeks'))||6;
+  S.flowerWeeks=parseInt(gv('flowerWeeks'))||8;
+  S.co2=gv('co2')||'no';
+  S.tempDay=parseInt(gv('tempDay'))||26;
+  S.tempNight=parseInt(gv('tempNight'))||20;
+  S.humDay=parseInt(gv('humDay'))||55;
+  S.humNight=parseInt(gv('humNight'))||50;
+  S.elecPrice=parseFloat(gv('elecPrice'))||2.80;
+  S.nutrientBrand=gv('nutrientBrand')||'custom';
+  S.lightsOn=parseInt(gv('lightsOn'))||8;
+  S.lightCycle=gv('lightCycle')||'18/6';
+  S.hours=parseInt(document.getElementById('sl-hrs')?.value||18);
+}
+
+// ════════════════════════════════════════════════════════
+//  MASTER RECALC
+// ════════════════════════════════════════════════════════
+function recalc(){
+  readInputs();
+  updateRootZone();
+  buildWaterTable();
+  updateWaterWeek();
+  buildFeedTables();
+  updateFeedWeek();
+  buildDailySchedule();
+  buildCycleDetail();
+  buildFullTimeline();
+  calcYield();
+  calcResources();
+  buildHarvestTL();
+  buildRiskAnalysis();
+  updateDry();
+  buildBPList();
+}
+
+// ════════════════════════════════════════════════════════
+//  VPD CALCULATOR
+// ════════════════════════════════════════════════════════
+function calcVPD(tempC, rhPct){
+  // Tetens equation: SVP in kPa
+  const svp = 0.6108 * Math.exp((17.27 * tempC) / (tempC + 237.3));
+  const avp = svp * (rhPct / 100);
+  return Math.round((svp - avp) * 100) / 100;
+}
+function getVPDTarget(stage){
+  // Scientifically accurate VPD targets by stage
+  const targets = {
+    0: {lo:0.4, hi:0.8, label:'Germ 0.4–0.8 kPa'},
+    1: {lo:0.4, hi:0.8, label:'Seedling 0.4–0.8 kPa'},
+    2: {lo:0.8, hi:1.2, label:'Veg 0.8–1.2 kPa'},
+    3: {lo:1.0, hi:1.5, label:'Preflower 1.0–1.5 kPa'},
+    4: {lo:1.2, hi:1.6, label:'Flower 1.2–1.6 kPa'},
+    5: {lo:1.4, hi:2.0, label:'Flush/Late Flower 1.4–2.0 kPa'},
+    6: {lo:1.4, hi:2.0, label:'Harvest 1.4–2.0 kPa'},
+    7: {lo:0.8, hi:1.2, label:'Dry Room 0.8–1.2 kPa'},
+    8: {lo:0.5, hi:0.8, label:'Cure/Storage 0.5–0.8 kPa'},
+  };
+  return targets[stage] || targets[2];
+}
+
+// ════════════════════════════════════════════════════════
+//  ROOT ZONE
+// ════════════════════════════════════════════════════════
+const POT_PROGRESSION=[0.5,1,3,5,10,15,20,30,50];
+function updateRootZone(){
+  const pot=S.potSize;
+  // Scientific root saturation estimate based on medium and stage
+  const medFactor = {soil:0.85, living_soil:0.85, coco:0.90, hydro:1.0, dwc:1.0, aero:1.0, rockwool:0.88, peat:0.80}[S.medium]||0.85;
+  const stageWeeks = [0,1.5, 1.5+S.vegWeeks, 1.5+S.vegWeeks+0.5, 1.5+S.vegWeeks+S.flowerWeeks][Math.min(S.currentStage,4)];
+  const satBase = Math.min(98, Math.round(20 + (stageWeeks * 7.5 * medFactor)));
+  const satPct = Math.min(98, satBase);
+  const nextPot=POT_PROGRESSION.find(p=>p>pot)||pot*2;
+  // Days until transplant based on saturation level
+  const daysLeft = satPct >= 90 ? 0 : Math.max(1, Math.round((95-satPct)/4));
+  const speed={hydro:'Fast',dwc:'Fast',aero:'Very Fast',coco:'Med-Fast',soil:'Med',living_soil:'Med',rockwool:'Med',peat:'Slow-Med'}[S.medium]||'Med';
+  document.getElementById('rz-pot').textContent=pot+'L';
+  document.getElementById('rz-sat').textContent=satPct+'%';
+  document.getElementById('rz-bar').style.width=satPct+'%';
+  document.getElementById('rz-bar').style.background=satPct>90?'linear-gradient(90deg,var(--amber),var(--red))':satPct>75?'linear-gradient(90deg,var(--green3),var(--amber))':'var(--green3)';
+  document.getElementById('rz-transplant').textContent=daysLeft<=0?'Transplant Now!':daysLeft+' days';
+  document.getElementById('rz-next').textContent=nextPot+'L';
+  document.getElementById('rz-speed').textContent=speed;
+  const medNotes={
+    soil:'Soil provides excellent buffering and is forgiving of pH swings (±0.5). Water when top 2–3cm is dry. Thoroughly wet then allow 30–40% dryback before next water. Good organic amendments feed slowly and steadily.',
+    living_soil:'Living soil is a complete ecosystem. Feed only with plain pH-adjusted water (6.2–6.8) — let biology do the work. Water gently to avoid disrupting microbial networks. Never use synthetic nutes.',
+    coco:'Coco requires daily irrigation in early flower, twice-daily in peak flower. Always supplement Cal-Mag (2–3ml/L). pH to 5.8–6.3 strictly. 10–20% runoff every feed prevents salt buildup. Cannot overwater if draining correctly.',
+    hydro:'Hydroponics demands tight pH (5.5–6.1) and EC monitoring. Change reservoir every 7 days. Keep water temperature 18–22°C to prevent Pythium. Check pH twice daily — drifts fast.',
+    dwc:'DWC roots are fully submerged — airstone is life-critical. EC 0.8–2.2 depending on stage. Water temp must stay below 22°C or root rot occurs within 24–48hrs. Daily monitoring non-negotiable.',
+    aero:'Aeroponics sprays roots via fine mist nozzles every 1–3 minutes. Fastest growth possible. Nozzle blockage = instant root dry-out within hours. Backup pump and pressure monitor essential.',
+    rockwool:'Pre-soak slabs at pH 5.5 for 24hr, then drain before transplant. Feed to saturation, allow moderate drain time. pH range 5.5–6.2. Wrap in foil to prevent algae on exposed slabs.',
+    peat:'Peat holds moisture well — easy to overwater. Allow 40–50% dryback between feeds. Slightly acidic (pH 6.0–6.5 for best uptake). Waterlogging kills roots fast in late flower.'
+  };
+  document.getElementById('rz-medium-notes').textContent=medNotes[S.medium]||medNotes.soil;
+  const drain={soil:'Moderate',living_soil:'Moderate',coco:'Fast',hydro:'N/A',dwc:'N/A',aero:'N/A',rockwool:'Fast',peat:'Slow–Mod'};
+  const whc={soil:'High',living_soil:'High',coco:'Low–Med',hydro:'None',dwc:'None',aero:'None',rockwool:'Med',peat:'High'};
+  document.getElementById('rz-drain').textContent=drain[S.medium]||'Mod';
+  document.getElementById('rz-drain-note').textContent=S.medium+' drainage profile';
+  document.getElementById('rz-whc').textContent=whc[S.medium]||'Med';
+  // Pot roadmap — scientifically accurate progression
+  const stageLabels=['Germ/Seedling','Early Veg','Mid Veg','Final Veg','Flower'];
+  const potMap=[0.5, Math.min(1,S.potSize), Math.min(3,S.potSize<=3?S.potSize:3), Math.min(7,S.potSize<=7?S.potSize:7), S.potSize];
+  const finalPot = S.medium==='dwc'||S.medium==='hydro'||S.medium==='aero' ? 'Reservoir' : S.potSize+'L';
+  document.getElementById('potRoadmap').innerHTML=stageLabels.map((s,i)=>{
+    const p = i===4 ? finalPot : potMap[i]+'L';
+    const isCurrent = i===4 ? true : potMap[i]===pot;
+    return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)${i===stageLabels.length-1?';border-bottom:none':''}">
+      <div style="font-family:var(--ff-mono);font-size:9px;color:var(--text3);width:80px">${s}</div>
+      <div style="font-size:12px;color:${isCurrent?'var(--green)':'var(--text2)'}">→ ${p}${isCurrent?' ◄ Current':''}</div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════
+//  WATER ENGINE — Scientifically accurate per medium
+// ════════════════════════════════════════════════════════
+function buildWaterSchedule(){
+  const rows=[];
+  const p=S.potSize;
+  const isHydro=['hydro','dwc','aero'].includes(S.medium);
+  const isCoco=S.medium==='coco'||S.medium==='rockwool';
+  const isSoil=['soil','living_soil','peat'].includes(S.medium);
+  // Volume per watering scales with pot size and medium
+  // Coco: target 10–20% runoff, daily/2x daily in flower
+  // Soil: 10–20% of pot volume per water, every 2–3 days
+  // Hydro: continuous reservoir, shown as daily top-up
+
+  function waterMl(stage, wk){
+    if(isHydro) return Math.round(p*1000*0.05); // 5% daily top-up
+    const base = p * 100; // 100ml per litre of pot as base
+    if(stage==='seedling') return Math.round(Math.min(150, p*50));
+    if(stage==='veg'){
+      const ramp = Math.min(1,(wk-2)/4);
+      if(isCoco) return Math.round(base * (0.3 + ramp*0.5));
+      return Math.round(base * (0.15 + ramp*0.25)); // soil less frequent
+    }
+    if(stage==='flower_early'){
+      if(isCoco) return Math.round(base * 0.8);
+      return Math.round(base * 0.35);
+    }
+    if(stage==='flower_peak'){
+      if(isCoco) return Math.round(base * 1.0);
+      return Math.round(base * 0.45);
+    }
+    if(stage==='flower_late'){
+      if(isCoco) return Math.round(base * 1.1);
+      return Math.round(base * 0.5);
+    }
+    if(stage==='flush'){
+      return Math.round(base * 1.5); // heavy flush volume
+    }
+    return Math.round(base*0.3);
+  }
+  function freqHrs(stage){
+    if(isHydro) return 24; // top-up shown as daily
+    if(isCoco){
+      if(stage==='seedling') return 24;
+      if(stage==='veg') return 22;
+      if(stage==='flower_early') return 18;
+      if(stage==='flower_peak') return 12; // twice daily coco peak flower
+      if(stage==='flower_late') return 10;
+      if(stage==='flush') return 8;
+    }
+    // Soil/peat: much less frequent
+    if(stage==='seedling') return 48;
+    if(stage==='veg') return 60;
+    if(stage==='flower_early') return 48;
+    if(stage==='flower_peak') return 36;
+    if(stage==='flower_late') return 30;
+    if(stage==='flush') return 24;
+    return 48;
+  }
+  function dryback(stage){
+    if(isHydro) return 0;
+    if(isCoco){
+      if(stage==='seedling') return 50;
+      if(stage==='veg') return 35;
+      if(stage==='flower_early') return 25;
+      if(stage==='flower_peak') return 15;
+      if(stage==='flower_late') return 10;
+      if(stage==='flush') return 5;
+    }
+    // Soil dryback is much higher
+    if(stage==='seedling') return 60;
+    if(stage==='veg') return 50;
+    if(stage==='flower_early') return 40;
+    if(stage==='flower_peak') return 35;
+    if(stage==='flower_late') return 30;
+    if(stage==='flush') return 10;
+    return 40;
+  }
+  function runoffNote(stage){
+    if(isHydro) return 'N/A';
+    if(stage==='seedling') return 'No runoff';
+    if(stage==='veg') return '5–10%';
+    if(stage==='flower_early') return '10–15%';
+    if(stage==='flower_peak') return '10–20%';
+    if(stage==='flower_late') return '15–20%';
+    if(stage==='flush') return '25–30%+';
+    return 'None';
+  }
+  function waterNote(stage){
+    if(isCoco && stage==='flower_peak') return '2× daily — check runoff EC';
+    if(isCoco && stage==='veg') return 'Daily, 5.8–6.0 pH';
+    if(isSoil && stage==='veg') return 'Allow full dryback';
+    if(stage==='flush') return 'Plain pH water only';
+    if(stage==='seedling') return 'Wet circle around stem';
+    return '';
+  }
+
+  rows.push({w:1,s:'Seedling',tag:'tag-seed',ml:waterMl('seedling',1),freq:freqHrs('seedling'),db:dryback('seedling'),ro:runoffNote('seedling'),note:waterNote('seedling')});
+  rows.push({w:2,s:'Seedling',tag:'tag-seed',ml:waterMl('seedling',2),freq:freqHrs('seedling'),db:dryback('seedling'),ro:runoffNote('seedling'),note:waterNote('seedling')});
+  for(let w=3;w<=2+S.vegWeeks;w++) rows.push({w,s:'Veg',tag:'tag-veg',ml:waterMl('veg',w),freq:freqHrs('veg'),db:dryback('veg'),ro:runoffNote('veg'),note:waterNote('veg')});
+  const fw=3+S.vegWeeks;
+  const halfFlower=Math.floor(S.flowerWeeks/2);
+  for(let w=fw;w<fw+2;w++) rows.push({w,s:'Flower',tag:'tag-flower',ml:waterMl('flower_early',w),freq:freqHrs('flower_early'),db:dryback('flower_early'),ro:runoffNote('flower_early'),note:waterNote('flower_early')});
+  for(let w=fw+2;w<fw+halfFlower;w++) rows.push({w,s:'Flower Peak',tag:'tag-flower',ml:waterMl('flower_peak',w),freq:freqHrs('flower_peak'),db:dryback('flower_peak'),ro:runoffNote('flower_peak'),note:waterNote('flower_peak')});
+  for(let w=fw+halfFlower;w<=fw+S.flowerWeeks-2;w++) rows.push({w,s:'Late Flower',tag:'tag-late',ml:waterMl('flower_late',w),freq:freqHrs('flower_late'),db:dryback('flower_late'),ro:runoffNote('flower_late'),note:waterNote('flower_late')});
+  for(let w=fw+S.flowerWeeks-1;w<=fw+S.flowerWeeks+1;w++) rows.push({w,s:'Flush',tag:'tag-flush',ml:waterMl('flush',w),freq:freqHrs('flush'),db:dryback('flush'),ro:runoffNote('flush'),note:waterNote('flush')});
+  return rows;
+}
+function buildWaterTable(){
+  const sched=buildWaterSchedule();
+  const total=sched.reduce((s,r)=>s+r.ml*7*S.plantCount/1000*(24/Math.max(r.freq,8)),0);
+  document.getElementById('w-total').textContent=Math.round(total)+'L';
+  document.getElementById('w-per-plant').textContent=Math.round(total/S.plantCount)+'L';
+  document.getElementById('waterTable').innerHTML=sched.map(r=>`
+    <tr><td>Wk ${r.w}</td>
+    <td><span class="stage-tag ${r.tag}">${r.s}</span></td>
+    <td class="mono">${r.ml<1000?r.ml+'ml':(r.ml/1000).toFixed(1)+'L'}</td>
+    <td class="mono">${r.freq}h</td>
+    <td class="mono">${r.db}%</td>
+    <td class="mono ${r.ro==='N/A'||r.ro==='No runoff'?'':'gold'}">${r.ro}</td>
+    <td style="font-size:10px;color:var(--text3)">${r.note}</td></tr>`).join('');
+}
+function updateWaterWeek(){
+  const wk=parseInt(document.getElementById('sl-week').value);
+  document.getElementById('lbl-week').textContent='Week '+wk;
+  const sched=buildWaterSchedule();
+  const row=sched.find(r=>r.w===wk)||sched[sched.length-1];
+  const ml=row.ml;
+  document.getElementById('w-today-amt').textContent=ml<1000?ml+'ml':(ml/1000).toFixed(1)+'L';
+  document.getElementById('w-today-freq').textContent=row.freq+'h';
+  document.getElementById('w-today-runoff').textContent=row.ro;
+}
+
+// ════════════════════════════════════════════════════════
+//  FEED ENGINE — Scientifically accurate per medium
+// ════════════════════════════════════════════════════════
+function phForMedium(m){
+  // Accurate pH ranges by medium
+  return {soil:'6.5',living_soil:'6.5',coco:'6.0',hydro:'5.8',dwc:'5.8',aero:'5.7',rockwool:'5.8',peat:'6.2'}[m]||'6.0';
+}
+function phForFlower(m){
+  // Slightly higher pH in flower for P uptake
+  return {soil:'6.8',living_soil:'6.8',coco:'6.2',hydro:'6.0',dwc:'6.0',aero:'5.9',rockwool:'6.0',peat:'6.4'}[m]||'6.2';
+}
+function buildFeedSchedule(mult){
+  const rows=[];
+  const ph=phForMedium(S.medium);
+  const phF=phForFlower(S.medium);
+  const isOrg=S.nutrientType==='organic';
+  // Organic nutrients have different EC behavior — lower but active
+  const ecMult=isOrg?0.7:1;
+  const ppmMult=isOrg?0.6:1;
+
+  // SEEDLING: extremely light — 1/4 strength max
+  rows.push({w:1,s:'Seedling',tag:'tag-seed',base:0,cm:+(0.3*mult).toFixed(1),add:isOrg?'none — plain water':'root stimulator 0.5ml/L',ec:+(0.3*mult*ecMult).toFixed(1),ppm:Math.round(150*mult*ppmMult),ph:'6.2'});
+  rows.push({w:2,s:'Seedling',tag:'tag-seed',base:+(0.25*mult).toFixed(1),cm:+(0.5*mult).toFixed(1),add:isOrg?'worm cast tea':'root stimulator 1ml/L',ec:+(0.5*mult*ecMult).toFixed(1),ppm:Math.round(250*mult*ppmMult),ph:'6.2'});
+
+  // VEG: ramp from 1/2 to full strength — N dominant
+  for(let w=3;w<=2+S.vegWeeks;w++){
+    const ramp=Math.min(1,(w-2)/Math.max(3,S.vegWeeks));
+    const baseD=+(1.5+ramp*2).toFixed(1)*mult;
+    const cmD=+(0.5+ramp*0.8).toFixed(1)*mult;
+    const ecD=+(0.8+ramp*0.9).toFixed(1)*ecMult;
+    const ppmD=Math.round((400+ramp*500)*mult*ppmMult);
+    const addD=isOrg?'kelp meal tea':'enzymes 1ml/L + silica 1ml/L';
+    rows.push({w,s:'Veg',tag:'tag-veg',base:+baseD.toFixed(1),cm:+cmD.toFixed(1),add:addD,ec:+ecD.toFixed(1),ppm:ppmD,ph});
+  }
+
+  // TRANSITION (Preflower): drop N, raise P/K
+  const fw=3+S.vegWeeks;
+  rows.push({w:fw,s:'Transition',tag:'tag-flower',base:+(2.5*mult).toFixed(1),cm:+(1.2*mult).toFixed(1),add:isOrg?'bat guano tea':'PK booster 0.5ml/L',ec:+(1.4*ecMult).toFixed(1)*mult,ppm:Math.round(700*mult*ppmMult),ph:ph});
+
+  // EARLY FLOWER: stretch period
+  for(let w=fw+1;w<fw+3;w++){
+    const ramp=(w-fw)/3;
+    rows.push({w,s:'Flower',tag:'tag-flower',base:+(2+ramp*1.5).toFixed(1)*mult,cm:+(1.2*mult).toFixed(1),add:`PK 13/14 ${+(1+ramp*0.5).toFixed(1)*mult}ml/L`,ec:+(1.4+ramp*0.4).toFixed(1)*ecMult,ppm:Math.round((700+ramp*200)*mult*ppmMult),ph:phF});
+  }
+
+  // MID FLOWER: peak feeding
+  const mid=fw+3;
+  for(let w=mid;w<fw+Math.floor(S.flowerWeeks*0.7);w++){
+    const ramp=(w-mid)/Math.max(2,S.flowerWeeks*0.3);
+    rows.push({w,s:'Peak Flower',tag:'tag-flower',base:+(3.5*mult).toFixed(1),cm:+(1.5*mult).toFixed(1),add:`PK + bloom ${+(2+ramp).toFixed(1)*mult}ml/L`,ec:+(1.8+ramp*0.3).toFixed(1)*ecMult,ppm:Math.round((900+ramp*200)*mult*ppmMult),ph:phF});
+  }
+
+  // LATE FLOWER: wind down, reduce N completely
+  for(let w=fw+Math.floor(S.flowerWeeks*0.7);w<=fw+S.flowerWeeks-1;w++){
+    rows.push({w,s:'Late Flower',tag:'tag-late',base:+(1.5*mult).toFixed(1),cm:+(1*mult).toFixed(1),add:isOrg?'molasses 2ml/L':'carbohydrates 2ml/L + ripening',ec:+(1.6*mult*ecMult).toFixed(1),ppm:Math.round(800*mult*ppmMult),ph:phF});
+  }
+
+  // FLUSH: clean water only
+  rows.push({w:fw+S.flowerWeeks,s:'Flush',tag:'tag-flush',base:0,cm:0,add:'plain pH water only — no nutes',ec:+(0.1).toFixed(1),ppm:50,ph:ph});
+  return rows;
+}
+function buildFeedTables(){
+  ['min','bal','max'].forEach((id,i)=>{
+    const mult=[0.65,1,1.2][i];
+    const rows=buildFeedSchedule(mult);
+    const tbody=document.querySelector(`#feed-${['min','bal','max'][i]}-table tbody`);
+    if(!tbody) return;
+    tbody.innerHTML=rows.map(r=>`
+      <tr><td>Wk ${r.w}</td>
+      <td><span class="stage-tag ${r.tag}">${r.s}</span></td>
+      <td class="mono">${r.base}</td>
+      <td class="mono">${r.cm}</td>
+      <td style="font-size:10px;color:var(--text3)">${r.add}</td>
+      <td class="mono">${r.ec}</td>
+      <td class="mono">${r.ppm}</td>
+      <td class="mono gold">${r.ph}</td></tr>`).join('');
+  });
+}
+function updateFeedWeek(){
+  const wk=parseInt(document.getElementById('sl-feedweek').value);
+  document.getElementById('lbl-feedweek').textContent='Week '+wk;
+  const mult={minimum:0.65,balanced:1,maximum:1.2}[S.feedIntensity]||1;
+  const rows=buildFeedSchedule(mult);
+  const row=rows.find(r=>r.w===wk)||rows[rows.length-1];
+  const maxEC=3.0;
+  document.getElementById('ecDisplay').innerHTML=`
+    <div class="ec-bar-wrap"><div class="ec-label">EC</div><div class="ec-track"><div class="ec-fill" style="width:${Math.min(100,row.ec/maxEC*100)}%"></div></div><div class="ec-val">${row.ec}</div></div>
+    <div class="ec-bar-wrap"><div class="ec-label">PPM</div><div class="ec-track"><div class="ec-fill" style="width:${Math.min(100,row.ppm/1500*100)}%;background:var(--gold)"></div></div><div class="ec-val" style="color:var(--gold)">${row.ppm}</div></div>
+    <div class="ec-bar-wrap"><div class="ec-label">pH</div><div class="ec-track"><div class="ec-fill" style="width:${Math.min(100,(parseFloat(row.ph)-5)/3*100)}%;background:var(--blue)"></div></div><div class="ec-val" style="color:var(--blue)">${row.ph}</div></div>
+    <div style="margin-top:8px;font-family:var(--ff-mono);font-size:9px;color:var(--text3)">Base: ${row.base} ml/L · Cal-Mag: ${row.cm} ml/L · ${row.add}</div>
+    <div style="margin-top:6px;font-family:var(--ff-mono);font-size:9px;color:var(--text3)">EC runoff target: ${row.s==='Flush'?'below 0.5 (flush complete)':row.s.includes('Late')?row.ec+'-0.2 (slight negative)':'match input ±0.2'}</div>`;
+}
+
+// ════════════════════════════════════════════════════════
+//  DAILY PLANNER — Highly detailed step-by-step
+// ════════════════════════════════════════════════════════
+function buildDailySchedule(){
+  readInputs();
+  const on=S.lightsOn;
+  const cycle=S.lightCycle;
+  const onHrs=parseInt(cycle.split('/')[0]);
+  const offHr=(on+onHrs)%24;
+  const fmt=h=>`${String(h).padStart(2,'0')}:00`;
+  const stage=S.currentStage;
+  const isCoco=S.medium==='coco'||S.medium==='rockwool';
+  const isHydro=['hydro','dwc','aero'].includes(S.medium);
+  const isSoil=['soil','living_soil','peat'].includes(S.medium);
+
+  // Calculate VPD for current settings
+  const vpdDay=calcVPD(S.tempDay, S.humDay);
+  const vpdNight=calcVPD(S.tempNight, S.humNight);
+  const vpdTarget=getVPDTarget(stage);
+  const vpdOk=vpdDay>=vpdTarget.lo && vpdDay<=vpdTarget.hi;
+  document.getElementById('vpd-day-val').textContent=vpdDay;
+  document.getElementById('vpd-night-val').textContent=vpdNight;
+  document.getElementById('vpd-status').textContent=vpdOk?'Ideal':vpdDay<vpdTarget.lo?'Too Low (raise temp or lower RH)':'Too High (lower temp or raise RH)';
+  document.getElementById('vpd-status').style.color=vpdOk?'var(--green)':vpdDay<vpdTarget.lo?'var(--blue)':'var(--amber)';
+  document.getElementById('vpd-range-lbl').textContent=vpdTarget.label;
+  document.getElementById('vpdDetails').innerHTML=`
+    Current day VPD: ${vpdDay} kPa @ ${S.tempDay}°C / ${S.humDay}% RH · 
+    Night VPD: ${vpdNight} kPa @ ${S.tempNight}°C / ${S.humNight}% RH · 
+    Target: ${vpdTarget.lo}–${vpdTarget.hi} kPa`;
+
+  // STAGE-SPECIFIC water and feed details
+  const mediumWater = isCoco ? `pH 5.8–6.0 strict, 10–20% runoff. ${stage>=4?'Twice daily in peak flower.':'Daily irrigation.'}` :
+    isHydro ? 'Check EC/pH in reservoir. Adjust and top up.' :
+    'Water when top 2–3cm dry. Allow 30–50% dryback.';
+
+  // Build detailed hourly events
+  const water1Hr=(on+1)%24;
+  const water2Hr=(on+10)%24; // second watering for coco in flower
+  const feedHr=(on+2)%24;
+  const envHr1=(on+1)%24;
+  const envHr2=(on+6)%24;
+  const co2Hr=(on+1)%24;
+  const trainHr=(on+4)%24;
+  const defHr=(on+5)%24;
+  const trichHr=(on+3)%24;
+  const midNightCheck=(offHr+2)%24;
+
+  // Build events based on stage
+  let events=[];
+  events.push({t:fmt(on),task:'Lights ON — Morning Protocol',sub:`• ${cycle} cycle begins\n• Open grow space: visual inspection for pests, mold, drooping\n• Sniff canopy — musty smell = early mould warning\n• Record overnight temperature from probe`,dot:'crit',pri:'priority-crit'});
+  events.push({t:fmt((on+0.5)|0),task:'Environment Check — Morning',sub:`• Verify: day temp ${S.tempDay}°C (±1°C) / RH ${S.humDay}% (±3%)\n• VPD target: ${vpdTarget.lo}–${vpdTarget.hi} kPa (currently ${vpdDay} kPa)\n• CO₂: ${S.co2==='yes'?'1200–1500ppm veg / 1500ppm flower':'Ambient — ensure exchange rate >1 air change/min'}\n• Adjust fan speed, dehumidifier, AC as needed`,dot:'',pri:''});
+
+  if(isCoco||isHydro){
+    events.push({t:fmt(water1Hr),task:'Morning Irrigation — Feed 1',sub:`• ${mediumWater}\n• Measure and pH-adjust solution before watering\n• Apply ${S.potSize<5?(S.potSize*100)+'ml':(S.potSize*80)+'ml'} per plant\n• Check runoff EC and pH — record in log\n• Target runoff: ${stage>=4?'10–20%':'5–10%'}${isCoco?' — if runoff EC high, flush with plain water':''}`,dot:'crit',pri:'priority-crit',badge:'badge-water'});
+  } else {
+    events.push({t:fmt(water1Hr),task:'Moisture & Substrate Check',sub:`• Lift pot — judge weight vs dry baseline\n• Insert moisture probe or finger-test top 3cm\n• ${isSoil?'Water only when top 2–3cm dry and pot feels light':'Check substrate moisture level'}\n• If watering: apply slowly, capture runoff sample, test EC`,dot:'',pri:'',badge:'badge-water'});
+  }
+
+  if(stage<=1){
+    events.push({t:fmt((on+2)%24),task:'Seedling / Germination Care',sub:`• Mist dome lightly — do not saturate\n• Light distance: 24–30 inches from top (low intensity)\n• Check tap root if germinating — plant when 0.5–1cm emerges\n• Temperature: 26–28°C is ideal for germination\n• PPFD target: ${stage===0?'0 — dark for germ':'200–400 μmol/m²/s'}`,dot:'',pri:''});
+  } else if(stage===2){
+    events.push({t:fmt(trainHr),task:'LST / Training Session',sub:`• ${S.training.includes('lst')?'Check and adjust LST ties — pull new growth down and outward':'No LST selected — consider for yield improvement'}\n• ${S.training.includes('top')?'Topping: only top at node 5 or above — allow 2–3 days recovery':'—'}\n• ${S.training.includes('scrog')?'SCROG: tuck new growth under net, maintain flat canopy':'—'}\n• ${S.training.includes('supercrop')?'Supercrop: pinch and bend dominant shoots — wear gloves':'—'}\n• Document training with photos — track canopy spread`,dot:'',pri:'priority-high',badge:'badge-train'});
+  } else if(stage===3){
+    events.push({t:fmt(trainHr),task:'Preflower — Stretch Management',sub:`• Tuck shoots under SCROG net ${S.training.includes('scrog')?'— stop tucking by day 21 of 12/12':'if using net'}\n• Canopy should be filling out — equalize plant height\n• First pistils visible — confirm female sex\n• Switch to bloom nutrient profile this week\n• ${S.training.includes('supercrop')?'Supercrop tall shoots to maintain even canopy':'LST tie-downs to spread canopy laterally'}\n• Install vertical support stakes for heavy colas`,dot:'',pri:'priority-high',badge:'badge-train'});
+  } else if(stage===4){
+    events.push({t:fmt(trichHr),task:'Trichome & Bud Inspection',sub:`• From week 6+ of flower: check trichomes with jeweler's loupe (60–100×)\n• Clear = immature · Cloudy = peak THC · Amber = degrading THC\n• Target: 90% cloudy + 10–20% amber for cerebral effect\n• Target: 70% cloudy + 30–40% amber for sedative effect\n• Check calyx swelling — pisils should be 70%+ orange by week 8\n• Watch for foxtailing — sign of light/heat stress or sativa genetics`,dot:'',pri:'priority-high',badge:'badge-inspect'});
+    if(isCoco){
+      events.push({t:fmt(water2Hr),task:'Afternoon Irrigation — Feed 2 (Coco Peak Flower)',sub:`• Second daily irrigation for coco in peak flower only\n• Use same nutrient solution — maintain consistency\n• Apply 20–30% less than morning feed\n• Check that substrate is not oversaturated\n• If runoff EC is rising (>0.5 above input): plain pH water this feed`,dot:'crit',pri:'priority-crit',badge:'badge-water'});
+    }
+    events.push({t:fmt(defHr),task:'Defoliation Check',sub:`• ${S.training.includes('defoliation')?'Week 3 and week 6 of flower: remove fan leaves blocking bud sites\n• Remove no more than 20–30% of leaf mass per session\n• Never defoliate under stress — check for deficiency first\n• Focus: leaves covering cola sites and blocking airflow between buds':'Defoliation not selected — manually remove only severely damaged/yellow leaves'}\n• Check for early powdery mildew (white dusty patches on fan leaves)\n• Remove any dead or dying lower leaves`,dot:'',pri:''});
+  } else if(stage===5){
+    events.push({t:fmt(water1Hr),task:'Flush Monitoring',sub:`• Plain pH water only — no nutrients whatsoever\n• ${['coco','rockwool'].includes(S.medium)?'3× pot volume per flush session, twice daily':'1–2× pot volume daily'}\n• Measure runoff EC daily — target below 0.5 for harvest\n• Starting EC: ${(buildFeedSchedule(1).slice(-2)[0]?.ec||1.8)} → target 0.3–0.5\n• Leaf yellowing and fade is normal and desired\n• Do not panic at yellowing — it signals successful flush`,dot:'crit',pri:'priority-crit',badge:'badge-water'});
+  }
+
+  events.push({t:fmt(envHr2),task:'Midday Environment & CO₂ Check',sub:`• Log temp, RH, and CO₂ ppm\n• ${S.co2==='yes'?'CO₂ should be 1200–1500ppm veg / 1500ppm early flower / 1200ppm late flower':'Open intake briefly — fresh air exchange'}\n• Check HVAC performance — canopy temp should not exceed ${S.tempDay+2}°C\n• Adjust oscillating fans — gentle leaf movement, no windburn\n• Check light distance: ${stage<=2?'18–24 inches for veg':'12–18 inches for flower (LED — check manufacturer specs)'}`,dot:'',pri:'',badge:'badge-env'});
+
+  events.push({t:fmt((on+8)%24),task:'Nutrient Preparation',sub:`• Mix nutrients for next feed in correct order:\n  1. Fill reservoir/bucket with pH-neutral water\n  2. Add Cal-Mag first if using coco or RO water\n  3. Add base nutrients (A then B if 2-part)\n  4. Add additives and boosters\n  5. Adjust pH last — target ${phForMedium(S.medium)} (±0.2)\n• EC check after mixing\n• Let solution sit 5–10min before use if using hard tap water`,dot:'',pri:'',badge:'badge-feed'});
+
+  if(stage===4 || stage===3){
+    events.push({t:fmt((on+9)%24),task:'Pest & Disease Scout',sub:`• Inspect undersides of fan leaves for spider mites (tiny dots, webbing)\n• Check bud sites for caterpillar frass (dark specks)\n• Smell dense colas — sweet rot smell = early botrytis\n• ${S.humDay>50?'⚠ RH '+S.humDay+'% — elevated mold risk. Increase dehumidification':'RH within range'}\n• Gently spread cola buds and inspect interior with small flashlight\n• Any grey/brown interior = cut out bud rot immediately`,dot:'gold',pri:'priority-high',badge:'badge-inspect'});
+  }
+
+  events.push({t:fmt((offHr-1+24)%24),task:'Pre-Lights-Off Protocol',sub:`• Final environment check — verify night temps and RH set\n• Night targets: ${S.tempNight}°C / ${S.humNight}% RH\n• ${stage>=4?'Lower RH for night — mold risk highest in dark period':'Maintain slightly lower RH at night'}\n• Ensure no standing water on surfaces — reduces mold risk\n• Reduce CO₂ injection to minimum during dark period\n• Log today's observations in grow journal`,dot:'',pri:''});
+
+  events.push({t:fmt(offHr),task:'Lights OFF — Night Protocol',sub:`• Night period begins: ${cycle.split('/')[1]}h dark\n• Night temp: ${S.tempNight}°C / Night RH: ${S.humNight}%\n• Keep space completely dark — no light leaks in flower\n• Reduce fan speed by 20–30% — less transpiration at night\n• ${isHydro?'Check reservoir temp — must stay below 22°C':'Allow substrate to begin drying back overnight'}`,dot:'',pri:''});
+
+  // Sort by time
+  events.sort((a,b)=>{
+    const ta=parseInt(a.t.replace(':',''));
+    const tb=parseInt(b.t.replace(':',''));
+    const adjA=ta<parseInt(fmt(on).replace(':',''))?ta+2400:ta;
+    const adjB=tb<parseInt(fmt(on).replace(':',''))?tb+2400:tb;
+    return adjA-adjB;
+  });
+
+  document.getElementById('dailySchedule').innerHTML=events.map(e=>`
+    <div class="hour-row ${e.pri||''}">
+      <div class="hour-time">${e.t}</div>
+      <div class="hour-dot ${e.dot||''}"></div>
+      <div style="flex:1">
+        <div class="hour-task">${e.badge?`<span class="hour-badge ${e.badge}">${e.badge.replace('badge-','').toUpperCase()}</span>`:''}${e.task}</div>
+        <div class="hour-sub">${e.sub.replace(/\n/g,'<br>')}</div>
+      </div>
+    </div>`).join('');
+
+  buildStageGuide();
+  buildDailyChecklist();
+}
+
+// ════════════════════════════════════════════════════════
+//  STAGE GUIDE — Step-by-step per stage
+// ════════════════════════════════════════════════════════
+function buildStageGuide(){
+  const stage=S.currentStage;
+  const isCoco=S.medium==='coco'||S.medium==='rockwool';
+  const isHydro=['hydro','dwc','aero'].includes(S.medium);
+  const guides=[
+    // 0: Germination
+    {title:'Germination Protocol',steps:[
+      {title:'Setup',actions:['Fill clean shot glass with room-temp water (pH 6.5)','Soak seeds 12–24hrs until they sink or crack','Keep in dark place at 26–28°C','Do not use cold tap water — minimum 24°C']},
+      {title:'Germination Method',actions:['Wet 2 paper towels with pH water — damp but not dripping','Place seeds 1cm apart, fold towel over seeds','Slide into zip-lock bag or between 2 plates','Keep in dark at 26–28°C — airing cupboard is ideal']},
+      {title:'Monitoring',actions:['Check moisture every 6–8 hours','Re-moisten towel if drying out — seeds must stay humid','Tap root emerges in 24–72hrs (most seeds within 48hrs)','Plant when tap root is 5–10mm long — do not wait longer']},
+      {title:'Planting',actions:['Make 1cm hole in wet substrate with pencil','Place seedling tap root DOWN — white root faces soil','Cover lightly — do not pack soil','Lightly mist top of substrate — do not saturate','Maintain 26–28°C dome temperature']}
+    ]},
+    // 1: Seedling
+    {title:'Seedling Care Protocol',steps:[
+      {title:'First 5 Days (Dome Phase)',actions:['Keep humidity dome on: maintain 80–90% RH under dome','Light at 24–30 inches: 200–400 μmol/m²/s only','Water 20–50ml in a circle around stem (not on stem)','No nutrients yet — cotyledons provide first food','Temperature: 24–26°C under dome']},
+      {title:'Days 5–14 (Establishment)',actions:['Remove dome when seedling touches sides or after 5–7 days','Begin with light watering: 50–100ml around stem only','Introduce first very dilute feed at week 2: EC 0.3–0.4 only','Light can move closer: 20–24 inches','Monitor: sturdy stem, green cotyledons, first true leaves emerging']},
+      {title:'Week 2–3 (Early Veg Transition)',actions:['First true leaves should be fully developed','Begin Cal-Mag if using coco (0.5ml/L)','Increase light gradually: 18/6 or 20/4 schedule','Watering: 80–150ml when top 1cm is dry','Transplant ready when roots visible from drainage holes']}
+    ]},
+    // 2: Vegetative
+    {title:'Vegetative Stage Protocol',steps:[
+      {title:'Nutrition Ramp-Up',actions:[`Start at 50% base nutrient dose (EC ${(0.8).toFixed(1)}) — ramp over 2 weeks`,'Cal-Mag: 1–2ml/L for coco and RO water users','pH strict: '+phForMedium(S.medium)+' (±0.2)','Add silica early in veg — strengthens cell walls','Feed every water in coco / every 2nd water in soil']},
+      {title:'Training Schedule',actions:[
+        S.training.includes('lst')?'LST: Tie down from week 2 — pull main shoot horizontal, new growth up':'Skip LST',
+        S.training.includes('top')?'Topping: Top at 5th node. Allow 3–4 days full recovery before more training':'Skip topping',
+        S.training.includes('fim')?'FIM: Pinch new growth at 80% off at tip — creates 4 tops':'Skip FIM',
+        S.training.includes('manifold')?'Manifold: Create manifold at node 3. Balance growth for 1 week before pushing':'Skip manifold',
+        S.training.includes('scrog')?`SCROG: Install net at ${S.potSize<5?'30cm':'40cm'} above canopy in week 3. Begin tucking.`:'Skip SCROG',
+      ].filter(a=>!a.startsWith('Skip')||S.training.length===0)},
+      {title:'Environment Management',actions:[`Day: ${S.tempDay}°C / ${S.humDay}% RH — VPD target 0.8–1.2 kPa`,`Night: ${S.tempNight}°C / ${S.humNight}% RH`,`CO₂: ${S.co2==='yes'?'800–1000ppm in veg':'Ambient — 1 fresh air exchange per minute minimum'}`,`PPFD: 400–600 μmol/m²/s weeks 1–3, 600–900 μmol/m²/s weeks 4+`,`Light distance: LED 18–24 inches / HPS 24–30 inches`]},
+      {title:'Pre-Flip Checklist',actions:['Canopy should fill 70–80% of grow space before flip','All training completed — no major stress 7 days before flip','Root-bound check: roots at drainage holes = ready','Increase P/K nutrients in final veg week','Check for pests before entering flower — treat if found']}
+    ]},
+    // 3: Preflower
+    {title:'Preflower / Transition Protocol',steps:[
+      {title:'The Flip',actions:['Switch light schedule to 12/12 (photoperiod) today','Reduce humidity: 50–55% is target for flower','Transition nutrients: drop nitrogen, raise phosphorus & potassium','Secure SCROG net if using — final tuck before stretch locks in','Height management critical — expect 50–100% stretch in sativas']},
+      {title:'Week 1–2 Post-Flip',actions:['First pistils (white hairs) appear: sex confirmation','Rogue out any males immediately — pollen destroys harvest','Nitrogen gradually reduced each feed from this point','Begin adding PK booster at low dose (0.5ml/L)','Defoliate lightly if canopy too dense — improve airflow']},
+      {title:'Week 2–3 Post-Flip (Stretch)',actions:['Maximum stretch period — plants may double in height','LST and SCROG: tuck shoots under net aggressively','Stop all major training by day 21 of 12/12','Begin installing support stakes for heavy cola sites','pH can shift slightly higher: '+phForFlower(S.medium)+' (slightly higher P uptake)','Increase EC gradually: target '+1.4+' in mid-transition']}
+    ]},
+    // 4: Flowering
+    {title:'Flowering Stage Protocol',steps:[
+      {title:'Early Flower (Wk 1–3)',actions:['Feed full PK with bloom base — EC 1.4–1.8','Defoliation session 1: remove fan leaves blocking bud sites (day 21)','Humidity: strict below 55% — mould prevention','PPFD increase: 800–1000 μmol/m²/s','Bud sites swelling — calyxes stacking = healthy sign']},
+      {title:'Mid Flower / Peak Feed (Wk 4–6)',actions:['Peak feeding: EC 1.8–2.2 depending on medium and strain','PK booster at full dose — check manufacturer schedule','CO₂: '+( S.co2==='yes'?'1500ppm maximum — highest DLI period':'Ensure excellent ventilation — plants need CO₂'),'Night temp drop of 5–8°C from day stimulates terpene production','Defoliation session 2 (day 42): remove blocking fan leaves only','Monitor for spider mites — ideal hunting condition for them']},
+      {title:'Late Flower (Wk 7–end)',actions:['Begin reducing nutrients: drop EC by 0.2 each week','Trichome inspection every 2–3 days from week 7','Reduce nitrogen to near-zero — only P+K and Cal-Mag','RH: below 45% if possible to prevent bud rot','Calyxes swelling rapidly, pistils turning orange = near harvest','Reduce light by 5–10% intensity in final week']}
+    ]},
+    // 5: Flushing
+    {title:'Flush Protocol',steps:[
+      {title:'Flush Duration by Medium',actions:[
+        isCoco?'Coco: 5–7 days flush is sufficient — coco holds fewer salts':'Soil: 10–14 days minimum — greater salt binding',
+        isHydro?'Hydro: 3–5 days with plain pH water — drain and refill':'',
+        'EC runoff target: below 0.5 = harvest ready','pH water only: '+phForMedium(S.medium)+' strictly','Volume: 3× pot volume per session — thoroughness matters'
+      ].filter(Boolean)},
+      {title:'Signs of Successful Flush',actions:['Leaves yellowing and fading — chlorophyll breakdown = sugar push','Runoff EC drops below 0.5','Plant looks "hungry" but trichomes still developing','Dark period 48–72hrs before harvest = resin surge','Continue checking trichomes daily during flush period']},
+      {title:'Harvest Window Calculation',actions:['80% cloudy + 10–20% amber trichomes = peak psychoactive harvest','50% cloudy + 30–40% amber = more relaxing/sedative effect','Sativa strains may need longer — look at calyx trichomes (more accurate)','Harvest in the last hours of dark period — lowest sugars in stems']}
+    ]},
+    // 6: Harvest
+    {title:'Harvest Day Protocol',steps:[
+      {title:'48–72hr Pre-Harvest',actions:['Begin 48–72hr dark period now for maximum resin development','Stop all watering — dry plant at harvest = easier trim','Final trichome check — confirm harvest window is open','Prepare: scissors, gloves, hanging wire/racks, hygro for dry room','Sanitize all tools with isopropyl alcohol']},
+      {title:'Harvest Day',actions:['Harvest in final hour of dark period — lowest carbohydrates in tissue','Cut whole plant or branch-by-branch — whole plant = better airflow','Rough trim: remove large fan leaves (no resin = no point keeping them)','Hang stems upside down — allows resin to settle towards buds','Mark each plant with strain name and harvest date']},
+      {title:'Dry Room Setup',actions:['Temperature: 16–18°C strictly — lower = better terpene preservation','Humidity: 58–62% RH — use hygrometer to verify','Airflow: gentle circulation, fans NOT directly on buds','Darkness: UV light degrades cannabinoids — keep dark or use green light','Duration: 10–14 days minimum — stems must snap, not bend']}
+    ]},
+    // 7: Drying
+    {title:'Drying Protocol',steps:[
+      {title:'Daily Monitoring',actions:['Check hanging stems daily from day 7 — snap-test small twigs','Target: small stems snap cleanly = dry enough for jars','Larger stems can still bend — that is acceptable','Remove any mouldy buds immediately — do not risk contamination','Keep fan on low circulatIon, not blowing on buds directly']},
+      {title:'Optimising the Dry',actions:['If drying too fast (under 7 days): raise humidity to 65%, reduce airflow','If drying too slow (over 14 days): lower humidity to 55%, add fan','Ideal: slow dry over 10–14 days preserves maximum terpenes','Seal dry room — every door opening changes humidity significantly','Weigh a small sample daily to track moisture loss rate']},
+      {title:'Jar-Ready Test',actions:['Small stems snap cleanly — do not bend','Bud exterior feels dry to touch, not tacky','Buds still slightly pliable (not crumbly) = ideal','If buds crumble = over-dried — add Boveda 62% immediately','Trim before jarring — sugar leaves brittle when dry, easier to remove']}
+    ]},
+    // 8: Curing
+    {title:'Curing Protocol',steps:[
+      {title:'Week 1 — Active Cure',actions:['Fill jars 2/3 to 3/4 full — do not pack tight','Burp jars twice daily: open 15 minutes each session','If buds feel moist after burping: leave lids off 30–60min','Hygrometer in jars: target 58–65% RH','If jar smells ammonia = too wet — leave open 2–3hrs then re-seal']},
+      {title:'Week 2–4 — Deepening',actions:['Burp once daily for 10–15 minutes','Terpene smell should be improving noticeably','Harshness reduces week by week — patience is the key variable','Add Boveda 62% packs to each jar for precision control','Minimum cure for decent smoke: 4 weeks']},
+      {title:'Week 4+ — Long-Term Storage',actions:['Burp weekly or use Boveda packs without burping','Store in cool, dark location — temperature consistency matters','Avoid light exposure: UV degrades THC at measurable rates','Best result: 8–12 weeks cure — terpene complexity peaks','Properly cured bud in sealed jars will last 12+ months without quality loss']}
+    ]}
+  ];
+
+  const guide = guides[stage] || guides[2];
+  document.getElementById('stageGuide').innerHTML = `
+    <div class="dp-section-title">${guide.title}</div>
+    ${guide.steps.map(step=>`
+      <div class="dp-section">
+        <div style="font-family:var(--ff-mono);font-size:9px;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">${step.title}</div>
+        <ul class="action-list">
+          ${step.actions.filter(Boolean).map(a=>`<li>${a}</li>`).join('')}
+        </ul>
+      </div>`).join('')}`;
+}
+
+// ════════════════════════════════════════════════════════
+//  DAILY CHECKLIST
+// ════════════════════════════════════════════════════════
+function buildDailyChecklist(){
+  const stage=S.currentStage;
+  const isCoco=S.medium==='coco'||S.medium==='rockwool';
+  const isHydro=['hydro','dwc','aero'].includes(S.medium);
+
+  const CHECKLISTS = {
+    0: [
+      {t:'Paper towel moist — re-moisten if drying',n:'Must stay humid — tap root needs moisture'},
+      {t:'Temperature 26–28°C in germ space',n:'Use seedling mat if ambient is below 24°C'},
+      {t:'Check for tap root emergence',n:'Plant immediately when 5–10mm long'},
+      {t:'No light exposure — keep in darkness',n:'Light inhibits germination in most strains'},
+    ],
+    1: [
+      {t:'Dome humidity 80–90%',n:'Reduce to 70% after first leaves emerge'},
+      {t:'Mist dome lightly if humidity dropped',n:'Do not mist seedling directly'},
+      {t:'Light at correct distance',n:'200–400 μmol — too close causes bleaching'},
+      {t:'No nutrients yet (week 1)',n:'Cotyledons supply all initial nutrition'},
+    ],
+    2: [
+      {t:'Check and adjust pH of water/nutrient solution',n:'pH: '+phForMedium(S.medium)+' (±0.2)'},
+      {t:isCoco?'Daily irrigation check — substrate moisture':'Lift pot — judge weight for dryback',n:isCoco?'Dryback 30–35% overnight in veg':'Water only when pot feels light and top 2–3cm dry'},
+      {t:'Check new growth — any yellowing or clawing?',n:'Yellowing = N deficiency / Clawing = N toxicity'},
+      {t:'Training check — adjust LST ties',n:'Pull dominant growth down and outward daily'},
+      {t:'VPD check: '+getVPDTarget(2).label,n:'Adjust temp/RH to hit target'},
+      {t:'Check for pests on leaf undersides',n:'Early detection prevents full infestation'},
+      {t:S.co2==='yes'?'CO₂ controller set to 800–1000ppm veg':'Air exchange: minimum 1×/min fresh air',n:'CO₂ enrichment increases growth rate by 20–30% in veg'},
+    ],
+    3: [
+      {t:'Confirm pistils visible — sex check',n:'White hairs = female; pollen sacs = male (remove immediately)'},
+      {t:'Transition nutrients: drop N, raise P/K',n:'Bloom nutrients from day 1 of flip'},
+      {t:'Humidity below 55% — adjust if needed',n:'Flower humidity management starts now'},
+      {t:'SCROG tuck — shoot management',n:'Stop all tucking by day 21 of 12/12'},
+      {t:'Install support stakes for heavy branches',n:'Do this early — harder when buds form'},
+    ],
+    4: [
+      {t:'Trichome inspection (from week 6)',n:'60–100× loupe — look for cloudy/amber ratio'},
+      {t:isCoco?'Morning and afternoon water check':'Morning moisture check',n:isCoco?'2× daily peak flower — check runoff EC each time':'Soil dryback 30–40% before rewatering'},
+      {t:'Humidity below 50% — critical in late flower',n:'Above 55% = botrytis risk. Below 45% = ideal.'},
+      {t:'Bud inspection — check interior of dense colas',n:'Spread bud gently with fingers, look for grey/brown = rot'},
+      {t:'Temperature differential: '+(S.tempDay-S.tempNight)+'°C day/night gap',n:'5–10°C drop at night boosts terpene and anthocyanin production'},
+      {t:'EC runoff tracking (coco/hydro)',n:'Runoff EC should match or be slightly above input EC'},
+      {t:'Mark flower week in grow journal',n:'Track trichome development weekly from week 5'},
+    ],
+    5: [
+      {t:'Plain pH water only — no nutrients',n:'pH: '+phForMedium(S.medium)+' strictly'},
+      {t:'Measure runoff EC — record daily',n:'Target: below 0.5 EC before harvest'},
+      {t:'Check trichomes — harvest window approaching',n:'Mostly cloudy = close. Any amber = harvest within days.'},
+      {t:'Watch for leaf fade — healthy flushing sign',n:'Yellow/purple leaves are desirable now'},
+    ],
+    6: [
+      {t:'48–72hr dark period started?',n:'Dark period before harvest maximises resin content'},
+      {t:'Dry room prepared: 16–18°C / 58–62% RH',n:'Temperature and humidity must be stable before harvest'},
+      {t:'Scissors and trays sanitised with ISO',n:'Clean tools prevent contamination'},
+      {t:'Trichomes final check — harvest window confirmed',n:'Mostly cloudy + 10–30% amber = optimal window'},
+    ],
+    7: [
+      {t:'Check dry room temperature and RH',n:'16–18°C / 58–62% RH daily'},
+      {t:'Visual check for mould on hanging buds',n:'Any grey fuzz = remove immediately'},
+      {t:'Stem snap test from day 8',n:'Small stems snap cleanly = ready to jar'},
+      {t:'No strong fan directly on buds',n:'Gentle air circulation only'},
+    ],
+    8: [
+      {t:'Burp jars today (week 1–2: twice daily)',n:'15 min minimum per burp session'},
+      {t:'Smell check — any ammonia smell?',n:'Ammonia = too wet. Leave lid open 1–2hrs.'},
+      {t:'Hygrometer in jars: 58–65% RH',n:'If below 58%: add Boveda 62%. If above 65%: leave open longer.'},
+      {t:'Store in cool, dark location',n:'Temperature fluctuations degrade cannabinoids'},
+    ]
+  };
+
+  const checks = CHECKLISTS[stage] || CHECKLISTS[2];
+  document.getElementById('dailyChecklist').innerHTML=checks.map((c,i)=>`
+    <div class="checklist-item">
+      <div class="check-box" id="chk-${i}" onclick="toggleCheck(${i})"></div>
+      <div>
+        <div class="check-text">${c.t}</div>
+        <div class="check-note">${c.n}</div>
+      </div>
+    </div>`).join('');
+}
+function toggleCheck(i){
+  const box=document.getElementById('chk-'+i);
+  if(box) box.classList.toggle('checked');
+}
+
+// ════════════════════════════════════════════════════════
+//  CYCLE INTELLIGENCE
+// ════════════════════════════════════════════════════════
+function setStage(n){
+  S.currentStage=n;
+  document.getElementById('currentStage').value=n;
+  syncLifecycle();
+  buildCycleDetail();
+  buildDailySchedule();
+}
+function syncLifecycle(){
+  const idx=parseInt(document.getElementById('currentStage').value);
+  document.querySelectorAll('.lc-node').forEach((n,i)=>{
+    n.classList.remove('active','done');
+    if(i<idx) n.classList.add('done');
+    else if(i===idx) n.classList.add('active');
+  });
+  document.querySelectorAll('.lc-seg').forEach((s,i)=>s.classList.toggle('done',i<idx));
+}
+
+const STAGE_DATA=[
+  {name:'Germination',icon:'🌱',tracks:[
+    {k:'Temperature',v:'26–28°C',note:'Warm, dark, moist. Seedling mat if below 24°C ambient.'},
+    {k:'Humidity (dome)',v:'80–90%',note:'Paper towel or humidity dome method'},
+    {k:'Tap Root Target',v:'5–10mm before planting',note:'Plant immediately — do not let it grow longer or it dries out'},
+    {k:'Expected Emergence',v:'24–72 hours',note:'Old seeds may take longer. Soak 12hrs in water first.'},
+    {k:'Light',v:'None — complete darkness',note:'Light inhibits germination. Tray or paper plate stack.'},
+  ]},
+  {name:'Seedling',icon:'🌿',tracks:[
+    {k:'Light Distance',v:'24–30 inches / 60–75cm',note:'Low PPFD: 200–400 μmol — no burning risk'},
+    {k:'PPFD',v:'200–400 μmol/m²/s',note:'Ramp to 400 by week 2, 600 by week 3'},
+    {k:'Water Amount',v:'20–80ml per session',note:'Wet circle 3–5cm from stem. No runoff in week 1.'},
+    {k:'Root Establishment',v:'7–10 days',note:'First true leaves signal root establishment'},
+    {k:'Humidity Dome',v:'Days 1–7',note:'Remove once first true leaves emerge or touch dome sides'},
+    {k:'EC (if feeding)',v:'0.3–0.5 EC max',note:'Most seedlings need no feed until week 2–3'},
+  ]},
+  {name:'Vegetative',icon:'🍃',tracks:[
+    {k:'Node Count to Train',v:'Node 4–5 for topping',note:'Earlier = smaller recovery. Later = more established.'},
+    {k:'Training Window',v:'Week 2–4 of veg',note:'LST daily from week 2. SCROG net week 3–4.'},
+    {k:'Canopy Target',v:`Fill ${S.growSpace} space 70–80%`,note:'Do not flip until canopy fills most of the space'},
+    {k:'Stem Diameter',v:'>3mm at base by flip',note:'Thick stems support heavy buds. Silica helps.'},
+    {k:'Growth Rate',v:'2–5cm/day healthy',note:'Slower = VPD/root/temperature issue. Faster = excellent conditions.'},
+    {k:'PPFD Veg',v:'400–900 μmol/m²/s',note:'Ramp up 100 μmol/week — avoid shock'},
+  ]},
+  {name:'Preflower',icon:'🔍',tracks:[
+    {k:'Stretch Factor',v:`${S.indica>50?'25–50%':'50–100%'} expected height gain`,note:'Indica: less stretch. Sativa: can triple in height.'},
+    {k:'Transition Feeding',v:'Drop N, raise P+K week 1',note:'Bloom nutes from day 1 of flip. Avoid nitrogen spike.'},
+    {k:'SCROG Tuck Deadline',v:'Day 21 of 12/12',note:'Never tuck after day 21 — damages developing bud sites'},
+    {k:'Sex Confirmation',v:'Week 1–2 of 12/12',note:'Pistils (white hairs) = female. Pollen sacs = male — remove NOW.'},
+    {k:'pH Adjustment',v:phForFlower(S.medium)+' in flower',note:'Slightly higher pH improves P uptake during flower transition'},
+  ]},
+  {name:'Flowering',icon:'🌸',tracks:[
+    {k:'Bud Density',v:`${S.indica>50?'Dense, compact':'Airy-medium, longer'}`,note:'Dense = higher mold risk. Airy = better airflow.'},
+    {k:'Trichome Development',v:'Clear → Cloudy → Amber',note:'Monitor from week 6. Harvest when mostly cloudy + 10–30% amber.'},
+    {k:'Terpene Production Peak',v:'Weeks 6–9 of flower',note:'5–10°C night temp drop amplifies terpene synthesis'},
+    {k:'Critical Humidity',v:'Below 50% RH in flower',note:'Above 55% = botrytis risk. Below 45% = optimal.'},
+    {k:'Mold Risk',v:`${S.humDay>55?'⚠ High — reduce RH now':S.humDay>48?'Moderate — watch dense sites':'Low — good humidity management'}`,note:'Inspect interior of dense colas daily from week 4'},
+    {k:'EC Peak',v:'1.8–2.2 EC weeks 4–6',note:'Then ramp down in final 2 weeks before flush'},
+  ]},
+  {name:'Flushing',icon:'💧',tracks:[
+    {k:'Flush Duration',v:`${['coco','rockwool'].includes(S.medium)?'5–7 days':'10–14 days'}`,note:'Coco needs less flushing than soil due to lower salt binding'},
+    {k:'Water Volume',v:'3× pot volume per session',note:'Thorough flushing essential. Run to clear.'},
+    {k:'EC Runoff Target',v:'Below 0.5 EC',note:'Check runoff daily. Clear, low EC water = harvest ready.'},
+    {k:'Leaf Fade',v:'Yellow/gold is normal',note:'Chlorophyll breakdown = final sugar push to buds. Do not panic.'},
+    {k:'Pre-Harvest Dark',v:'48–72hr darkness',note:'Complete blackout — maximises terpene and resin production'},
+  ]},
+  {name:'Harvest',icon:'✂️',tracks:[
+    {k:'Trichome Target',v:'90% cloudy + 10–20% amber',note:'Amber % determines sedative vs cerebral effect. Your preference.'},
+    {k:'Harvest Window',v:'5–7 day optimal window',note:'Check every 2 days from week 7 onwards with loupe'},
+    {k:'Dark Period',v:'48–72 hrs complete darkness',note:'Switches plant to maximum resin production before harvest'},
+    {k:'Best Harvest Time',v:'Last hour of dark period',note:'Carbohydrate levels lowest in tissue — cleanest smoke'},
+    {k:'Wet to Dry Ratio',v:'3.5–4.5× weight loss',note:'100g wet = 22–28g dry typically. Indica denser, sativa less.'},
+  ]},
+  {name:'Drying',icon:'🌬️',tracks:[
+    {k:'Temperature',v:'16–18°C',note:'Lower temp = slower dry = better terpene preservation'},
+    {k:'Humidity',v:'58–62% RH',note:'Slow dry: 10–14 days at 60% RH is ideal'},
+    {k:'Airflow',v:'Gentle, indirect only',note:'Fan circulates room air — never blow directly on buds'},
+    {k:'Darkness',v:'Complete darkness required',note:'UV light degrades THC measurably during drying'},
+    {k:'Stem Snap Test',v:'Day 10–14',note:'Small stems snap = ready. Large stems still bend = normal.'},
+  ]},
+  {name:'Curing',icon:'🫙',tracks:[
+    {k:'Jar Fill Level',v:'2/3 to 3/4 full',note:'Allow room for air. Do not pack tight.'},
+    {k:'Week 1 Burping',v:'2× daily, 15 min each',note:'Aggressive CO₂ removal and moisture equalisation'},
+    {k:'Target Jar RH',v:'58–65% RH',note:'Boveda 62% packs maintain this automatically'},
+    {k:'Minimum Cure',v:'4 weeks minimum',note:'8 weeks = significantly smoother. 12 weeks = premium.'},
+    {k:'Storage',v:'Cool, dark, airtight',note:'UV and heat degrade cannabinoids — cupboard or pantry ideal'},
+  ]},
+];
+function buildCycleDetail(){
+  const d=STAGE_DATA[S.currentStage]||STAGE_DATA[2];
+  document.getElementById('cycle-detail').innerHTML=`
+    <div class="card-title">${d.icon} ${d.name} — Tracking Parameters</div>
+    ${d.tracks.map(t=>`
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <div style="font-family:var(--ff-mono);font-size:9px;color:var(--text3);width:130px;flex-shrink:0;padding-top:1px;text-transform:uppercase;letter-spacing:.5px">${t.k}</div>
+        <div style="flex:1"><div style="font-size:13px;color:var(--text)">${t.v}</div><div style="font-family:var(--ff-mono);font-size:9px;color:var(--text3);margin-top:1px">${t.note}</div></div>
+      </div>`).join('')}`;
+}
+const STAGE_NAMES=['Germination','Seedling','Vegetative','Preflower','Flowering','Flushing','Harvest','Drying','Curing'];
+function buildFullTimeline(){
+  const durations=[
+    {d:'3–5 days'},{d:'2–3 weeks'},
+    {d:S.vegWeeks+' weeks'},{d:'2–3 weeks'},
+    {d:S.flowerWeeks+' weeks'},{d:S.medium==='soil'||S.medium==='living_soil'?'10–14 days':'5–7 days'},
+    {d:'1 day'},{d:'10–14 days'},{d:'4–12 weeks'}
+  ];
+  const cur=S.currentStage;
+  document.getElementById('fullTimeline').innerHTML=STAGE_NAMES.map((s,i)=>`
+    <div class="tl-item ${i<cur?'done':i===cur?'active':''}">
+      <div class="tl-dot"></div>
+      <div class="tl-head">${s} <span style="font-family:var(--ff-mono);font-size:9px;color:var(--text3);font-weight:400">· ${durations[i].d}</span></div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════════════════
+//  YIELD — Scientifically accurate model
+// ════════════════════════════════════════════════════════
+function calcYield(){
+  // Base: grams per watt depends on light quality and grow space efficiency
+  const SPACE_M2 = {'2x2':0.37,'3x3':0.84,'4x4':1.49,'5x5':2.32,'4x8':2.97,'custom':1.49}[S.growSpace]||1.49;
+  const WATTS_M2 = S.watts / SPACE_M2;
+  // LED efficacy (modern LED averages 1.5g/W; older HID ~0.9g/W)
+  // Use a base of 1.0g/W as conservative LED baseline
+  let base = S.watts * 1.0;
+  // Adjust for light intensity vs space
+  if(WATTS_M2 > 400) base *= 1.05; // high intensity bonus
+  else if(WATTS_M2 < 150) base *= 0.80; // underpowered penalty
+
+  const mods=[];
+  // Training modifiers — multiplicative but capped to avoid unrealistic stacking
+  let trainMult=1.0;
+  if(S.training.includes('scrog')){trainMult*=1.22;mods.push('SCROG +22% — maximises canopy light use')}
+  if(S.training.includes('lst')){trainMult*=1.12;mods.push('LST +12% — open canopy structure')}
+  if(S.training.includes('top')){trainMult*=1.08;mods.push('Topping +8% — doubles main colas')}
+  if(S.training.includes('manifold')){trainMult*=1.14;mods.push('Manifold +14% — equalised energy distribution')}
+  if(S.training.includes('fim')){trainMult*=1.06;mods.push('FIM +6% — extra tops')}
+  if(S.training.includes('defoliation')){trainMult*=1.07;mods.push('Defoliation +7% — improved light penetration')}
+  if(S.training.includes('supercrop')){trainMult*=1.05;mods.push('Supercrop +5% — knuckle strengthening')}
+  if(S.training.includes('lollipop')){trainMult*=1.04;mods.push('Lollipop +4% — energy to top colas')}
+  // Cap training multiplier to realistic maximum
+  trainMult = Math.min(trainMult, 1.6);
+  base *= trainMult;
+
+  // Environmental modifiers
+  if(S.co2==='yes'){base*=1.22;mods.push('CO₂ enrichment +22%')}
+  if(S.tempDay>=24&&S.tempDay<=28){base*=1.05;mods.push('Optimal temp range +5%')}
+  else if(S.tempDay>30){base*=0.88;mods.push('Heat stress −12%')}
+  if(S.humDay>=45&&S.humDay<=60){base*=1.03;mods.push('Optimal RH +3%')}
+
+  // Nutrient intensity
+  if(S.feedIntensity==='maximum'){base*=1.12;mods.push('Max feed push +12%')}
+  if(S.feedIntensity==='minimum'){base*=0.82;mods.push('Min feed schedule −18%')}
+
+  // Genetics
+  if(S.indica>60){base*=1.08;mods.push('Indica dominant +8% (dense compact buds)')}
+  if(S.sativa>70){base*=0.92;mods.push('High sativa −8% (airier buds, lower density)')}
+
+  // Veg time (more veg = larger plants = more yield)
+  if(S.vegWeeks>=8){base*=1.15;mods.push('Long veg (8+ wk) +15%')}
+  else if(S.vegWeeks>=6){base*=1.08;mods.push('Standard veg (6 wk) +8%')}
+  else if(S.vegWeeks<=3){base*=0.75;mods.push('Short veg (<3 wk) −25%')}
+
+  // Autoflower penalty
+  if(S.photoperiod==='auto'){base*=0.55;mods.push('Autoflower −45% (shorter cycle, smaller plant)')}
+
+  // Medium modifiers
+  const medMod={soil:1.0,living_soil:1.02,coco:1.08,hydro:1.12,dwc:1.15,aero:1.18,rockwool:1.08,peat:0.95}[S.medium]||1.0;
+  base*=medMod;
+  if(medMod>1) mods.push(`${S.medium} medium +${Math.round((medMod-1)*100)}%`);
+
+  const mid=Math.round(base/10)*10;
+  const min=Math.round(mid*0.60/10)*10;
+  const max=Math.round(mid*1.45/10)*10;
+  const pct=Math.min(96, Math.round(40 + (mid/S.watts)*35));
+  const qualPct=Math.min(95, Math.round(55+(S.vegWeeks*2)+(S.training.length*2.5)+(S.co2==='yes'?8:0)+(S.feedIntensity==='maximum'?5:0)));
+
+  document.getElementById('yl-min').textContent=min+'g';
+  document.getElementById('yl-mid').textContent=mid+'g';
+  document.getElementById('yl-max').textContent=max+'g';
+  // g/W efficiency display
+  document.getElementById('yl-min-ppw').textContent=(min/S.watts).toFixed(2)+'g/W';
+  document.getElementById('yl-mid-ppw').textContent=(mid/S.watts).toFixed(2)+'g/W';
+  document.getElementById('yl-max-ppw').textContent=(max/S.watts).toFixed(2)+'g/W';
+  document.getElementById('ry-pct').textContent=pct+'%';
+  document.getElementById('ry-qual-pct').textContent=qualPct+'%';
+  const r=238.8;
+  document.getElementById('ry-ring').style.strokeDashoffset=r-(r*pct/100);
+  document.getElementById('ry-qual').style.strokeDashoffset=r-(r*qualPct/100);
+  document.getElementById('yieldBreakdown').innerHTML=[
+    {l:`Base (${S.watts}W × 1.0 g/W efficiency)`,v:Math.round(S.watts)+'g'},
+    {l:`Space: ${S.growSpace} (${SPACE_M2.toFixed(2)}m²) — ${Math.round(WATTS_M2)}W/m²`,v:''},
+    ...mods.map(m=>({l:m,v:''})),
+    {l:'',v:''},
+    {l:'Balanced Estimate',v:mid+'g',bold:true},
+    {l:'g/Watt efficiency',v:(mid/S.watts).toFixed(2)+'g/W',bold:false},
+    {l:'g/m² (light footprint)',v:Math.round(mid/SPACE_M2)+'g/m²',bold:false},
+  ].filter(x=>x!==null).map(x=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid ${x.bold?'var(--green3)':'var(--border)'};font-family:${x.bold?'var(--ff-head)':'var(--ff-mono)'};font-size:${x.bold?'14':'9'}px">
+    <span style="color:${x.bold?'var(--green)':'var(--text3)'}">${x.l}</span>
+    <span style="color:${x.bold?'var(--green)':'var(--text2)'}">${x.v}</span></div>`).join('');
+  return{min,mid,max,pct};
+}
+
+// ════════════════════════════════════════════════════════
+//  RESOURCES
+// ════════════════════════════════════════════════════════
+function calcResources(){
+  const hours=parseInt(document.getElementById('sl-hrs')?.value||18);
+  document.getElementById('lbl-hrs').textContent=hours+'h';
+  const totalDays=(2+S.vegWeeks+S.flowerWeeks+2)*7; // including seedling and flush
+  const lightKwh=(S.watts/1000)*hours*totalDays;
+  const fanKwh=0.08*24*totalDays; // inline fan
+  const extKwh=0.05*24*totalDays; // extraction
+  const dehumKwh=S.humDay>55?0.12*12*totalDays:0; // dehumidifier if needed
+  const co2Kwh=S.co2==='yes'?0.02*hours*totalDays:0; // CO₂ controller
+  const miscKwh=0.015*24*totalDays;
+  const total=lightKwh+fanKwh+extKwh+dehumKwh+co2Kwh+miscKwh;
+  const cost=total*S.elecPrice;
+  const midYield=calcYield().mid;
+  document.getElementById('res-kwh').textContent=Math.round(total);
+  document.getElementById('res-cost').textContent='R'+Math.round(cost).toLocaleString();
+  document.getElementById('res-cpg').textContent=midYield>0?'R'+((cost/midYield).toFixed(2)):'—';
+  const items=[
+    {n:'Lighting',kwh:lightKwh},{n:'Fans',kwh:fanKwh},{n:'Extraction',kwh:extKwh},
+    ...(dehumKwh>0?[{n:'Dehumidifier',kwh:dehumKwh}]:[]),
+    ...(co2Kwh>0?[{n:'CO₂ System',kwh:co2Kwh}]:[]),
+    {n:'Misc / Timers',kwh:miscKwh}
+  ];
+  document.getElementById('elecBreakdown').innerHTML=items.map(x=>`
+    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px">
+    <span style="color:var(--text2)">${x.n}</span>
+    <span style="font-family:var(--ff-mono);font-size:10px;color:var(--green)">R${Math.round(x.kwh*S.elecPrice).toLocaleString()} · ${Math.round(x.kwh)} kWh</span></div>`).join('');
+
+  // Water usage — accurate per medium and stage
+  const plants=S.plantCount;
+  const isHydro=['hydro','dwc','aero'].includes(S.medium);
+  const isCoco=S.medium==='coco'||S.medium==='rockwool';
+  const waterData=[
+    {s:'Seedling (2 wk)',l:isHydro?plants*2:plants*(S.potSize*0.05)*7*2,c:'var(--green3)'},
+    {s:'Vegetative',l:isHydro?plants*5*7*S.vegWeeks:isCoco?plants*(S.potSize*0.10)*7*S.vegWeeks:plants*(S.potSize*0.06)*7*S.vegWeeks,c:'var(--green)'},
+    {s:'Flower (first half)',l:isHydro?plants*8*7*Math.floor(S.flowerWeeks/2):isCoco?plants*(S.potSize*0.16)*7*Math.floor(S.flowerWeeks/2):plants*(S.potSize*0.10)*7*Math.floor(S.flowerWeeks/2),c:'var(--gold)'},
+    {s:'Flower (second half)',l:isHydro?plants*10*7*Math.ceil(S.flowerWeeks/2):isCoco?plants*(S.potSize*0.20)*7*Math.ceil(S.flowerWeeks/2):plants*(S.potSize*0.12)*7*Math.ceil(S.flowerWeeks/2),c:'var(--amber)'},
+    {s:'Flush',l:isHydro?0:plants*(S.potSize*0.50)*7*2,c:'var(--blue)'},
+  ].filter(x=>x.l>0);
+  const totalW=waterData.reduce((s,x)=>s+x.l,0);
+  document.getElementById('res-water').textContent=Math.round(totalW)+'L';
+  document.getElementById('res-watercost').textContent='R'+(totalW*0.02).toFixed(2);
+  const mxW=Math.max(...waterData.map(x=>x.l));
+  document.getElementById('waterBars').innerHTML=waterData.map(x=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 0">
+      <div style="font-family:var(--ff-mono);font-size:9px;color:var(--text3);width:110px">${x.s}</div>
+      <div style="flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:${x.l/mxW*100}%;background:${x.c};border-radius:3px;transition:width .6s"></div></div>
+      <div style="font-family:var(--ff-mono);font-size:9px;color:var(--text2);width:44px;text-align:right">${Math.round(x.l)}L</div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════════════════
+//  HARVEST TIMELINE
+// ════════════════════════════════════════════════════════
+function buildHarvestTL(){
+  const weeksLeft=[
+    [2+S.vegWeeks+S.flowerWeeks+4,0],
+    [S.vegWeeks+S.flowerWeeks+3,1],
+    [S.vegWeeks+S.flowerWeeks+2,2],
+    [S.flowerWeeks+2,3],
+    [S.flowerWeeks,4],
+    [2,5],
+    [0,6],
+  ];
+  const cur=S.currentStage;
+  const entry=weeksLeft.find(([,s])=>s===cur)||weeksLeft[0];
+  const daysLeft=entry[0]*7;
+  const target=new Date();
+  target.setDate(target.getDate()+daysLeft);
+  const opts={day:'numeric',month:'long',year:'numeric'};
+  document.getElementById('harvestDate').textContent=target.toLocaleDateString('en-ZA',opts);
+  document.getElementById('harvestDays').textContent=daysLeft+' days';
+  const tl=[
+    {n:'Seedling complete → early veg',d:'Week 1–2'},
+    {n:'Vegetative complete — ready to flip',d:'Week '+(2+S.vegWeeks)},
+    {n:'12/12 flip → Stretch / Preflower',d:'Week '+(2+S.vegWeeks+1)},
+    {n:'Bud set & formation',d:'Week '+(2+S.vegWeeks+3)+' (day 21 flower)'},
+    {n:'Peak flower / maximum feed',d:'Week '+(2+S.vegWeeks+Math.floor(S.flowerWeeks/2)+1)},
+    {n:'Flush begins',d:'Week '+(2+S.vegWeeks+S.flowerWeeks)},
+    {n:'Harvest window',d:target.toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'})},
+    {n:'Dry complete',d:'~14 days post-harvest'},
+    {n:'Cure begins',d:'Jar date — 4–8 weeks to premium'},
+  ];
+  const cur2=Math.min(cur,5);
+  document.getElementById('harvestTL').innerHTML=tl.map((t,i)=>`
+    <div class="tl-item ${i<cur2?'done':i===cur2?'active':''}">
+      <div class="tl-dot"></div>
+      <div class="tl-head">${t.n} <span style="font-family:var(--ff-mono);font-size:9px;color:var(--text3);font-weight:400">· ${t.d}</span></div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════════════════
+//  RISK ANALYSIS
+// ════════════════════════════════════════════════════════
+function buildRiskAnalysis(){
+  const risks=[];
+  // Botrytis / Mould
+  if(S.humDay>58&&S.currentStage>=3) risks.push({r:'Botrytis (Bud Rot)',level:'high',note:`RH ${S.humDay}% in flower — reduce to below 50%. Inspect dense bud sites daily.`});
+  else if(S.humDay>50&&S.currentStage>=3) risks.push({r:'Mould Risk — Elevated',level:'med',note:`RH ${S.humDay}% borderline. Monitor interior of dense colas. Target below 50%.`});
+  else risks.push({r:'Mould / Botrytis',level:'low',note:'Humidity within safe range for current stage'});
+  // Heat Stress
+  if(S.tempDay>31) risks.push({r:'Heat Stress — Severe',level:'high',note:`Day temp ${S.tempDay}°C exceeds 31°C threshold. Leaf curl, bleaching, and flower damage likely. Add cooling urgently.`});
+  else if(S.tempDay>29) risks.push({r:'Heat Stress — Caution',level:'med',note:`Temp ${S.tempDay}°C approaching limit. Watch for leaf curl and white pistils browning prematurely.`});
+  else risks.push({r:'Heat Stress',level:'low',note:'Temperature within safe range'});
+  // Root bound
+  if(S.potSize<3&&S.vegWeeks>5) risks.push({r:'Root Bound — Critical',level:'high',note:'Pot too small for veg duration. Stunted growth and nutrient lockout expected. Transplant immediately.'});
+  else if(S.potSize<5&&S.vegWeeks>7) risks.push({r:'Root Restriction',level:'med',note:'Consider upsizing before final veg push for maximum yield potential.'});
+  else risks.push({r:'Root Restriction',level:'low',note:'Pot size adequate for planned grow duration'});
+  // Light-CO₂ balance
+  if(S.co2==='no'&&S.watts>600) risks.push({r:'Light-CO₂ Mismatch',level:'med',note:`${S.watts}W without CO₂ enrichment: above 600W, CO₂ becomes the limiting factor. Plants cannot use excess light without elevated CO₂.`});
+  else risks.push({r:'Light-CO₂ Balance',level:'low',note:'Setup within normal parameters'});
+  // Medium-specific risks
+  const medRisks={
+    aero:'Aeroponics: pump failure = root dry-out within 1–2 hours. Backup pump + pressure alarm essential.',
+    dwc:'DWC: root rot if water temp exceeds 22°C. Add beneficial bacteria (Hydroguard). Check temp daily.',
+    hydro:'Hydro: reservoir crash wipes crop within 24hrs. Monitor EC/pH twice daily. Weekly reservoir change.',
+    coco:'Coco: salt buildup without adequate runoff leads to lockout. Maintain 10–20% runoff every feed.',
+    living_soil:'Living Soil: synthetic nutrients or high EC water destroys beneficial microbes. Plain water only.',
+  };
+  if(medRisks[S.medium]) risks.push({r:'Medium-Specific Risk',level:'med',note:medRisks[S.medium]});
+  // VPD risk
+  const vpdDay=calcVPD(S.tempDay,S.humDay);
+  const vpdTarget=getVPDTarget(S.currentStage);
+  if(vpdDay>vpdTarget.hi+0.3) risks.push({r:'VPD Too High — Transpiration Stress',level:'med',note:`VPD ${vpdDay} kPa (target ${vpdTarget.lo}–${vpdTarget.hi}). Plants transpiring too fast — lower temp or raise RH.`});
+  else if(vpdDay<vpdTarget.lo-0.2) risks.push({r:'VPD Too Low — Mould Risk',level:'med',note:`VPD ${vpdDay} kPa below target. Raise temp or reduce humidity to increase VPD.`});
+  else risks.push({r:'VPD Balance',level:'low',note:`VPD ${vpdDay} kPa — within target range ${vpdTarget.lo}–${vpdTarget.hi} kPa`});
+
+  document.getElementById('riskAnalysis').innerHTML=risks.map(r=>`
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+      <span class="risk ${r.level==='high'?'risk-high':r.level==='med'?'risk-med':'risk-low'}">${r.level.toUpperCase()}</span>
+      <div><div style="font-size:13px;color:var(--text)">${r.r}</div><div style="font-family:var(--ff-mono);font-size:9px;color:var(--text3);margin-top:2px">${r.note}</div></div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════════════════
+//  DRYING
+// ════════════════════════════════════════════════════════
+function updateDry(){
+  const day=parseInt(document.getElementById('sl-dryday').value);
+  S.dryDay=day;
+  document.getElementById('lbl-dryday').textContent='Day '+day;
+  document.getElementById('dry-bar').style.width=Math.round(day/14*100)+'%';
+  const dryStatus=day<=3?'⚪ Fresh — high moisture':day<=6?'🟡 Drying actively':day<=9?'🟠 Halfway — check stems':day<=11?'🟢 Nearly ready — stem test daily':'✅ Likely ready — snap test';
+  const cureData=[
+    {w:'Week 1',a:'Open jars 15 min × 2/day',n:'Remove CO₂, equalise moisture. If ammonia smell: leave open 2–3hrs then re-seal.'},
+    {w:'Week 2',a:'Open jars 10 min × 1/day',n:'Moisture should stabilise 58–65% RH. Add Boveda 62% packs now.'},
+    {w:'Week 3–4',a:'Open jars every 2–3 days',n:'Terpenes developing — smell complexity increases. Significant quality improvement.'},
+    {w:'Week 5–6',a:'Open once per week',n:'Boveda packs maintain humidity automatically. Close fully after checking.'},
+    {w:'Week 6+',a:'Sealed long-term storage',n:'Optimal quality at 8–12 weeks. Properly cured bud lasts 12+ months sealed.'},
+  ];
+  document.getElementById('cureSchedule').innerHTML=`
+    <div style="font-family:var(--ff-mono);font-size:9px;color:var(--text3);margin:6px 0 12px;padding:8px;background:var(--bg3);border-radius:3px;border:1px solid var(--border)">${dryStatus}</div>
+    <div class="stat-lbl" style="font-family:var(--ff-mono);font-size:8px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:6px">Curing Protocol</div>
+    ${cureData.map(c=>`<div style="display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)">
+      <div style="font-family:var(--ff-mono);font-size:9px;color:var(--text3);width:60px;flex-shrink:0;padding-top:1px">${c.w}</div>
+      <div><div style="font-size:12px;color:var(--text)">${c.a}</div><div style="font-family:var(--ff-mono);font-size:9px;color:var(--text3);margin-top:1px">${c.n}</div></div>
+    </div>`).join('')}
+    <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+      <div class="stat"><div class="stat-lbl">Terpene Retention</div><div class="stat-val sm">92%</div><div class="stat-unit">at 6 weeks</div></div>
+      <div class="stat"><div class="stat-lbl">Smoothness</div><div class="stat-val sm" style="color:var(--gold)">High</div><div class="stat-unit">after 4+ wks</div></div>
+      <div class="stat"><div class="stat-lbl">Jar RH Target</div><div class="stat-val sm blue">62%</div><div class="stat-unit">Boveda 62%</div></div>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════
+//  BLUEPRINT — Complete professional grow plan
+// ════════════════════════════════════════════════════════
+const BP_ITEMS=[
+  {n:'Plant Profile & Genetics',ico:'🧬'},{n:'Pot Progression Roadmap',ico:'🪴'},
+  {n:'Week-by-Week Nutrient Schedule',ico:'🧪'},{n:'Precision Watering Plan',ico:'💧'},
+  {n:'VPD & Environment Targets',ico:'🌡'},{n:'Training Roadmap',ico:'🌿'},
+  {n:'Yield Prediction (3 scenarios)',ico:'⚖️'},{n:'Electricity Usage & Costs',ico:'⚡'},
+  {n:'Water Usage Estimate',ico:'🚰'},{n:'Harvest Schedule & Countdown',ico:'📅'},
+  {n:'Drying Protocol',ico:'🌬️'},{n:'Cure Schedule',ico:'🫙'},
+  {n:'Risk Analysis',ico:'⚠️'},{n:'Minimum Strategy',ico:'📉'},
+  {n:'Balanced Strategy',ico:'📊'},{n:'Maximum Strategy',ico:'📈'},
+  {n:'Stage-by-Stage Action Plan',ico:'📋'},
+];
+function buildBPList(){
+  document.getElementById('bpList').innerHTML=BP_ITEMS.map((b,i)=>`
+    <div class="bp-item">
+      <div class="bp-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="bp-ico">${b.ico}</div>
+      <div class="bp-name">${b.n}</div>
+      <div class="bp-status">ready</div>
+    </div>`).join('');
+}
+
+function generateBlueprint(){
+  const y=calcYield();
+  const meta=`${S.strainName} · Generated: ${new Date().toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'})} · Est. Harvest: ${document.getElementById('harvestDate').textContent}`;
+  document.getElementById('bpMeta').textContent=meta;
+  const feedRows=buildFeedSchedule(1);
+  const waterRows=buildWaterSchedule();
+  const vpdDay=calcVPD(S.tempDay,S.humDay);
+  const SPACE_M2={'2x2':0.37,'3x3':0.84,'4x4':1.49,'5x5':2.32,'4x8':2.97,'custom':1.49}[S.growSpace]||1.49;
+
+  document.getElementById('bpContent').innerHTML=`
+  <div class="card-title">01 · Plant Profile</div>
+  <div class="card-flat" style="margin-bottom:10px;font-size:12px;color:var(--text2);line-height:2">
+    <b style="color:var(--text)">${S.strainName}</b> (${S.lineage}) · ${S.indica}% Indica / ${S.sativa}% Sativa<br>
+    THC: ${S.thc}% · CBD: ${S.cbd}% · ${S.photoperiod==='auto'?'Autoflower':'Photoperiod'} · ${S.seedType}<br>
+    Origin: ${S.startMethod} · Medium: <b style="color:var(--green)">${S.medium}</b> · ${S.potSize}L ${S.potSystem} · ${S.plantCount} plants · ${S.growSpace} ft (${SPACE_M2}m²) · ${S.watts}W<br>
+    Training: ${S.training.join(', ')||'none'} · CO₂: ${S.co2==='yes'?'Yes — enriched':'No — ambient'} · Feed: ${S.feedIntensity}
+  </div>
+  <div class="card-title">02 · Pot Progression</div>
+  <div class="card-flat" style="margin-bottom:10px;font-size:12px;color:var(--text2);line-height:2">
+    Seedling → 0.5L · Early Veg → 1L · Mid Veg → 3L · Late Veg → ${S.potSize>=7?S.potSize+'L':'5L'} · Flower → ${S.potSize}L<br>
+    Current: ${S.potSize}L ${S.potSystem} · Next up: ${(()=>{const pp=[0.5,1,3,5,10,15,20];return pp.find(p=>p>S.potSize)||S.potSize*2})()}L<br>
+    Transplant when root saturation exceeds 85–90% of pot volume.
+  </div>
+  <div class="card-title">03 · Nutrient Schedule (Balanced)</div>
+  <div class="card-flat" style="margin-bottom:10px;overflow-x:auto">
+    <table class="wtable"><thead><tr><th>Wk</th><th>Stage</th><th>Base ml/L</th><th>Cal-Mg</th><th>Additive</th><th>EC</th><th>PPM</th><th>pH</th></tr></thead>
+    <tbody>${feedRows.map(r=>`<tr><td>Wk${r.w}</td><td><span class="stage-tag ${r.tag}">${r.s}</span></td><td class="mono">${r.base}</td><td class="mono">${r.cm}</td><td style="font-size:9px;color:var(--text3)">${r.add}</td><td class="mono">${r.ec}</td><td class="mono">${r.ppm}</td><td class="mono gold">${r.ph}</td></tr>`).join('')}</tbody></table>
+  </div>
+  <div class="card-title">04 · Precision Watering Plan</div>
+  <div class="card-flat" style="margin-bottom:10px;overflow-x:auto">
+    <table class="wtable"><thead><tr><th>Week</th><th>Stage</th><th>Amount/plant</th><th>Freq</th><th>Dryback</th><th>Runoff</th><th>Note</th></tr></thead>
+    <tbody>${waterRows.map(r=>`<tr><td>Wk${r.w}</td><td><span class="stage-tag ${r.tag}">${r.s}</span></td><td class="mono">${r.ml<1000?r.ml+'ml':(r.ml/1000).toFixed(1)+'L'}</td><td class="mono">${r.freq}h</td><td>${r.db}%</td><td class="${r.ro==='None'||r.ro==='N/A'?'':'gold'}">${r.ro}</td><td style="font-size:9px;color:var(--text3)">${r.note}</td></tr>`).join('')}</tbody></table>
+  </div>
+  <div class="card-title">05 · VPD & Environment Targets</div>
+  <div class="card-flat" style="margin-bottom:10px;font-size:12px;color:var(--text2);line-height:2">
+    Day: ${S.tempDay}°C / ${S.humDay}% RH → VPD ${vpdDay} kPa · Night: ${S.tempNight}°C / ${S.humNight}% RH<br>
+    VPD Targets: Seedling 0.4–0.8 · Veg 0.8–1.2 · Early Flower 1.0–1.5 · Peak Flower 1.2–1.6 · Late Flower 1.4–2.0<br>
+    Flower humidity: below 50% RH strictly — mould prevention priority<br>
+    CO₂: ${S.co2==='yes'?'800ppm veg → 1200ppm early flower → 1500ppm peak → 1200ppm late flower':'Ambient ~400ppm — ensure 1+ fresh air change per minute'}
+  </div>
+  <div class="card-title">06 · Training Roadmap</div>
+  <div class="card-flat" style="margin-bottom:10px;font-size:12px;color:var(--text2);line-height:2">
+    ${S.training.includes('lst')?'<b>LST:</b> Begin week 2 veg. Pull and tie main shoot horizontal. Daily adjustments throughout veg.<br>':''}
+    ${S.training.includes('scrog')?'<b>SCROG:</b> Install net week 3–4. Tuck shoots under net until 60–70% full. Stop tucking at day 21 of flower.<br>':''}
+    ${S.training.includes('top')?'<b>Topping:</b> Top at node 5. Allow 3–4 day full recovery before further training.<br>':''}
+    ${S.training.includes('fim')?'<b>FIM:</b> Pinch 80% of new growth tip at node 4–5. Creates 4 main colas.<br>':''}
+    ${S.training.includes('defoliation')?'<b>Defoliation:</b> Session 1 at day 21 of flower. Session 2 at day 42. Remove max 30% leaf mass per session.<br>':''}
+    ${S.training.includes('manifold')?'<b>Manifold:</b> Create mainline at node 3. Equalise all growth before veg push. High stress — allow full recovery.<br>':''}
+    ${S.training.includes('supercrop')?'<b>Supercropping:</b> Pinch and bend dominant shoots. Knuckle development strengthens yield.<br>':''}
+    ${S.training.includes('lollipop')?'<b>Lollipop:</b> Remove bottom 30% of growth 1 week before flip. Focuses energy to top colas.<br>':''}
+    ${S.training.length===0?'No training selected — natural growth. Consider LST for significant yield improvement.':''}
+  </div>
+  <div class="card-title">07 · Yield Prediction</div>
+  <div class="card-flat" style="margin-bottom:10px;font-size:12px;color:var(--text2);line-height:2">
+    Conservative: <b style="color:var(--text)">${y.min}g</b> (${(y.min/S.watts).toFixed(2)}g/W) · 
+    Balanced: <b style="color:var(--green)">${y.mid}g</b> (${(y.mid/S.watts).toFixed(2)}g/W) · 
+    Maximum: <b style="color:var(--gold)">${y.max}g</b> (${(y.max/S.watts).toFixed(2)}g/W)<br>
+    g/m² (balanced): ${Math.round(y.mid/SPACE_M2)}g/m² · Yield potential: ${y.pct}%<br>
+    Based on: ${S.watts}W · ${S.training.join('+')||'no training'} · CO₂: ${S.co2} · ${S.medium} · ${S.vegWeeks}wk veg
+  </div>
+  <div class="card-title">08 · Electricity</div>
+  <div class="card-flat" style="margin-bottom:10px;font-size:12px;color:var(--text2);line-height:2">
+    Total kWh: ${document.getElementById('res-kwh').textContent} · Total Cost: ${document.getElementById('res-cost').textContent}<br>
+    Cost per gram: ${document.getElementById('res-cpg').textContent} · Electricity rate: R${S.elecPrice}/kWh
+  </div>
+  <div class="card-title">09 · Water Usage</div>
+  <div class="card-flat" style="margin-bottom:10px;font-size:12px;color:var(--text2)">
+    Total estimated: ${document.getElementById('res-water').textContent} for ${S.plantCount} plants over full grow<br>
+    ${['coco','rockwool'].includes(S.medium)?'Coco: daily feeds, 10–20% runoff every session — significant water use':
+    ['dwc','hydro','aero'].includes(S.medium)?'Hydro: reservoir top-ups + weekly full reservoir changes':
+    'Soil: water when dry — less total water than coco but larger individual volumes'}
+  </div>
+  <div class="card-title">10 · Harvest Schedule</div>
+  <div class="card-flat" style="margin-bottom:10px;font-size:12px;color:var(--text2)">
+    Estimated harvest: <b style="color:var(--gold)">${document.getElementById('harvestDate').textContent}</b> · Days remaining: ${document.getElementById('harvestDays').textContent}<br>
+    48–72hr dark period before chop · Harvest in final hours of dark period<br>
+    Trichome target: mostly cloudy (peak THC) + 10–30% amber (personal preference)
+  </div>
+  <div class="card-title">11 · Drying Protocol</div>
+  <div class="card-flat" style="margin-bottom:10px;font-size:12px;color:var(--text2);line-height:2">
+    Temperature: 16–18°C strict · Humidity: 58–62% RH · Airflow: gentle, indirect<br>
+    Duration: 10–14 days (never rush — biggest quality factor) · Darkness essential<br>
+    Ready: small stems snap cleanly. Hang whole plant for best airflow.
+  </div>
+  <div class="card-title">12 · Cure Schedule</div>
+  <div class="card-flat" style="margin-bottom:10px;font-size:12px;color:var(--text2);line-height:2">
+    Wk 1: Burp 15min × 2/day · Wk 2: 10min × 1/day<br>
+    Wk 3–4: Every 2–3 days · Wk 5+: Weekly with Boveda 62% packs<br>
+    Minimum: 4 weeks · Premium: 8–12 weeks · Sealed storage: 12+ months
+  </div>
+  <div class="card-title">13 · Risk Analysis</div>
+  <div class="card-flat" style="margin-bottom:10px" id="bpRisks"></div>
+  <div class="card-title">14–16 · Growth Strategies</div>
+  <div class="card-flat" style="font-size:12px;color:var(--text2);line-height:2">
+    <b style="color:var(--text3)">MINIMUM:</b> 65% doses. Extended veg recovery. Minimal training. pH on the lower side. Lower EC throughout. Ideal for new growers.<br>
+    <b style="color:var(--green3)">BALANCED:</b> 100% manufacturer schedule. ${S.vegWeeks}wk veg. ${S.training.join('+')||'basic training'}. CO₂: ${S.co2==='yes'?'1200ppm veg / 1500ppm flower':'ambient'}. Proven performance.<br>
+    <b style="color:var(--gold)">MAXIMUM:</b> 120% dose push. Extended veg for maximum canopy. Aggressive training. CO₂ at ceiling. Daily monitoring required. Experienced growers only.
+  </div>`;
+
+  buildRiskAnalysis();
+  const riskHTML=document.getElementById('riskAnalysis').innerHTML;
+  const bpRisks=document.getElementById('bpRisks');
+  if(bpRisks) bpRisks.innerHTML=riskHTML;
+  document.getElementById('bpOutput').style.display='block';
+  document.getElementById('bpOutput').scrollIntoView({behavior:'smooth'});
+}
+
+// ════════════════════════════════════════════════════════
+//  STRATEGY TABS
+// ════════════════════════════════════════════════════════
+document.querySelectorAll('.strat-tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.strat-tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.strat-pane').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('strat-'+t.dataset.s).classList.add('active');
+  });
+});
+
+// ════════════════════════════════════════════════════════
+//  NAV
+// ════════════════════════════════════════════════════════
+document.querySelectorAll('.nav-btn[data-p]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('panel-'+b.dataset.p).classList.add('active');
+  });
+});
+
+// LIFECYCLE STRIP
+document.querySelectorAll('.lc-node').forEach(n=>{
+  n.addEventListener('click',()=>{
+    const idx=parseInt(n.dataset.idx);
+    document.getElementById('currentStage').value=idx;
+    S.currentStage=idx;
+    syncLifecycle();
+    buildCycleDetail();
+    buildDailySchedule();
+    buildHarvestTL();
+    buildRiskAnalysis();
+  });
+});
+</script>
+</body>
+</html>
